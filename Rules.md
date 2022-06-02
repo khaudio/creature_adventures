@@ -43,8 +43,27 @@ Wild creatures are encountered when crossing `Wilderness` tiles on the game boar
 
 # Levels and EXP
 
-All players begin the game at level 1.  Whenever a creature is defeated in battle, players gain 1 EXP.  For every 3 EXP that is gained, players gain a level.  Maximum level is 5.  Each time a level is gained, players are awarded one `Attribute Point` that can be assigned to any creature or traded for `Artifacts`.  EXP is awarded following all victorious battles, including ones with wild creatures.
+All players begin the game at level 1.  Whenever a creature is defeated in battle, players gain 1 EXP.  When enough EXP is gained, players gain a level.  Maximum level is 5.  Each time a level is gained, players are awarded `Attribute Points` that can be assigned to any creature or traded for `Artifacts`.  EXP is awarded following all victorious battles, including ones with wild creatures.  The maximum `Attribute Points` that a player can earn is 15.
 
+- Level 1
+
+    1 `Attribute Point` given to players to begin game
+
+- Level 2 (Requires 3 EXP at Level 1)
+
+    2 `Attribute Points` earned
+
+- Level 3 (Requires 4 EXP at Level 2)
+
+    3 `Attribute Points` earned
+
+- Level 4 (Requires 6 EXP at Level 3)
+
+    4 `Attribute Points` earned
+
+- Level 5 (Requires 8 EXP at Level 4)
+
+    5 `Attribute Points` earned
 
 # Combat
 
@@ -159,7 +178,7 @@ Thieves are combatants found among The Wilderness that provide extra EXP if defe
 
 `Ascension` teleports the player to any `Shaman` on the game board.  It can only be used once per charge; i.e., once a player uses `Ascension`, they must purchase another one using more `Attribute Points`.  Furthermore, the player receives `Astral Sickness` after teleporting, and cannot use `Ascension` on the next turn.
 
-- Level 1 (Cost: 5 `Attribute Points` per charge)
+- Level 1 (Cost: 3 `Attribute Points` per charge)
 
 ## **Quiet Shoes**
 
