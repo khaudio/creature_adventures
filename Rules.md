@@ -1,6 +1,6 @@
 # Creature Adventures
 
-Battle using `Creatures`, collect `Sigils`, gain `Attributes` and `Artifacts`, then claim victory in `The Colosseum` to win.
+Battle using `Creatures`, collect `Sigils`, gain `Attributes` and `Artifacts`, then claim victory in `The Colosseum`, and dethrone the Emperor to win.
 Traverse the game board and roll to determine the outcome of each encounter.
 
 
@@ -201,8 +201,7 @@ Thieves are combatants found among The Wilderness that provide extra EXP if defe
 
 ## **The Colosseum**
 
-`The Colosseum` is a gauntlet of three consecutive battles that may only be performed once a player holds all three `Sigils`.  
-
+`The Colosseum` is a gauntlet of three consecutive battles that may only be performed once a player holds all three `Sigils`.  Each battle takes one turn.  Regular play resumes for other players between each battle.  Once one player start combat in `The Colosseum`, all other players gain `Vigilance` and may attack the player participating in the gauntlet.  If an attacker succeeds, that player receives the required `Sigils`, restarts `The Colosseum` as the active combatant, and loses `Vigilance`, while the defeated player gains it after being sent `Home`.  Once three single-player battles in a row have been won, that player usurps the throne, and the game ends.
 
 # Artifacts
 
@@ -232,7 +231,7 @@ Thieves are combatants found among The Wilderness that provide extra EXP if defe
 
 ## **Ascension**
 
-`Ascension` teleports the player to any `Shaman` on the game board.  It can only be used once per charge; i.e., once a player uses `Ascension`, they must purchase another one using more `Attribute Points`.  Furthermore, the player receives `Astral Sickness` after teleporting, and cannot use `Ascension` on the next turn.
+`Ascension` swaps two players' positions on the game board.  It can only be used once per charge; i.e., once a player uses `Ascension`, they must purchase another one using more `Attribute Points`.  Furthermore, the player receives `Astral Sickness` after teleporting, and cannot use `Ascension` on the next turn.
 
 - Level 1 (Cost: 3 `Attribute Points` per charge)
 
@@ -270,6 +269,10 @@ Thieves are combatants found among The Wilderness that provide extra EXP if defe
 
 
 # Conditions and Curses
+
+## Vigilance
+
+When on player begins the combat tournament in `The Colosseum`, all other players gain `Vigilance`, raising `Attack` and `Defense` by 20% while `The Colosseum` is active.
 
 ## **Exhaustion**
 
