@@ -26,7 +26,7 @@ Creatures have three attributes: `HP`, `Attack`, and `Defense`.  Once assigned, 
 
 ### **HP**
 
-Hit points available for each creature.  Each creature has a maximum `HP` value.  When a creature's `HP` reaches zero, it is unavailable during battle and must be revived.
+Hit points available for each creature.  Each creature has a maximum `HP` value.  When a creature's `HP` reaches zero, it is unavailable during battle and must be revived.  All creatures begin the game with 10 `HP`.  Assigning an `Attribute Point` raises the maximum `HP` by 2.
 
 ### **Attack**
 
@@ -38,7 +38,7 @@ The base defense value used to mitigate damage done by the aggressor's `Attack` 
 
 ## **Wild Creatures**
 
-Wild creatures are encountered when crossing `Wilderness` tiles on the game board.  
+Wild creatures are encountered when crossing `Wilderness` tiles on the game board.  They can be defeated or caught.  Catching a wild creature awards 2 EXP points, while defeating it yields a single EXP point.
 
 
 # Levels and EXP
@@ -67,15 +67,20 @@ All players begin the game at level 1.  Whenever a creature is defeated in battl
 
 # Combat
 
+## **Player vs Player**
+
 In battles, players take turns choosing offensive or defensive moves.  The player who initiates a battle attacks first, unless the defender has the `Sigil of Speed`.
+
+Only one creature can be used at a time.  Each player chooses which creature to use when the battle begins.
 
 Combat actions include:
 
-- Attack
-    - `Strike` (Roll for chances of a successful attack)
+- **Attack**
+    - `Strike` (Roll for chances of inflicting damage)
         - 10% chance for a miss (No damage done)
         - 20% chance for an unmitigated hit (Attacking creature's base `Attack` power)
-        - 60% chance for a deflected hit (Attacker's `Attack` power minus defender's `Defense`)
+        - 40% chance for a deflected hit (Attacker's `Attack` power minus defender's `Defense`)
+        - 20% chance to receive a counterstrike (Opposing creature's `Attack` power minus attacker's `Defense` damage received)
         - 10% chance for a critical hit (Double `Attack` power minus defender's `Defense`)
     - `Meditate` (Roll to increase `Attack` for one turn)
         - 10% chance for no change to `Attack`
@@ -83,23 +88,58 @@ Combat actions include:
         - 30% chance to raise `Attack` by 40%
         - 10% chance to raise `Attack` by 100%
 
-- Defend
-    - `Brace` (Forego a counterattack and roll to boost `Defense` for one turn)
+- **Defend**
+    - `Brace` (Roll to boost `Defense` for one turn)
         - 10% chance for no change to `Defense`
         - 50% chance to raise `Defense` by 20%
         - 30% chance to raise `Defense` by 40%
         - 10% chance to raise `Defense` by 100%
+    - `Dodge` (Roll to dodge attack entirely)
+        - 60% chance dodge is unsuccessful
+        - 40% chance attack is dodged (No damage done)
     - `Inner Peace` (Heal a pre-assigned creature for 50% HP if the player has the `Sigil of Wisdom`).  `Inner Peace` may not be used to revive a creature while in battle.
 
-- Run
+- **Switch**
+    - Switch to another creature
+
+- **Forfeit**
+    - Admit defeat and return `Home`.  Any `Sigils` go to the victor.
+
+## **Single Player Combat**
+
+Single player combat is somewhat different than with PvP.  Offensive moves are still available, but the possible outcomes change.
+
+- **Attack**
+    - `Strike` (Roll for chances of inflicting damage)
+        - 10% chance for a miss (No damage done)
+        - 40% chance for an unmitigated hit (Attacking creature's base `Attack` power)
+        - 40% chance to receive a counterstrike (NPC `Attack` power damage done to player)
+        - 10% chance for a critical hit (Double `Attack` power)
+
+    - `Meditate` (Roll to increase `Attack` for one turn)
+        - 10% chance for no change to `Attack`
+        - 50% chance to raise `Attack` by 20%
+        - 30% chance to raise `Attack` by 40%
+        - 10% chance to raise `Attack` by 100%
+
+- **Defend**
+    - `Inner Peace` (Heal a pre-assigned creature for 50% HP if the player has the `Sigil of Wisdom`).  `Inner Peace` may not be used to revive a creature while in battle.
+
+- **Switch**
+    - Switch to another creature
+
+- **Run**
     - Roll to escape a wild creature encounter.
-        50% chance the player escapes
-        50% chance the player is trapped and must proceed to the next turn
+        - 50% chance the player escapes
+        - 50% chance the player is trapped and must proceed to the next turn of combat
+
+- **Forfeit**
+    - Admit defeat and return `Home`.  Any `Sigils` held return to `Warlords`.
 
 
 # Shaman
 
-`Shaman` heal creatures by variable amounts.  Players can choose how much to risk when rolling for healing.
+`Shaman` revive and heal creatures by variable amounts.  Players can choose how much to risk when rolling for healing.
 
 Choose:
 
@@ -118,7 +158,7 @@ Choose:
 
 `Sigils` are obtained by defeating Warlords or other players who currently possess sigils.  There are three total sigils, and a player must have all three to enter The Colosseum to complete the game.  When one player loses to another, they must forfeit all sigils they currently posses.  When one player attacks another, the aggressor is afflicted by `Exhaustion`, losing the following turn.  If the defending player is victorious, they are bolstered by `Rally Cry`, and all three creatures' HP is doubled for one turn and healed fully.
 
-For exmaple, if Player A attacks Player B unsuccessfully, Player A returns `Home` with `Exhaustion`, and Player B gains `Rally Cry` that lasts through their next turn.
+For example, if Player A attacks Player B unsuccessfully, Player A returns `Home` with `Exhaustion`, and Player B gains `Rally Cry` that lasts through Player B's next turn, as it was Player A's turn when the attack took place.
 
 ## **Sigil of Power**
 
@@ -168,6 +208,22 @@ Thieves are combatants found among The Wilderness that provide extra EXP if defe
 
 `Artifacts` are game modifiers that are less powerful than `Sigils` and are not required for victory.  Artifacts can be purchased using `Attribute Points`.  All players can purchase all items; i.e., unlike `Sigils`, the number of available `Artifacts` is not finite.
 
+## **Fortify**
+
+`Fortify` allows a player to begin defensive combat with `Brace`, even if the opponent has the `Sigil of Speed`.
+
+- Level 1 (Cost: 1 `Attribute Points`)
+
+    Roll to `Brace` before the first attack
+
+- Level 2 (Cost: 2 `Attribute Points`)
+
+    Roll to `Brace` or `Dodge` before the first attack
+
+- Level 3 (Cost: 3 `Attribute Points`)
+
+    Begin every defensive encounter by temporarily healing one creature for 30% HP.  When the encounter is over, the creature loses the temporary HP.
+
 ## **Tailwind**
 
 `Tailwind` allows the player to roll twice for movement.  Only one roll may be used to move across the board; i.e., if a player rolls a 4 and then 8, they may choose to move 8 spaces, discarding the roll of 4.
@@ -208,9 +264,9 @@ Thieves are combatants found among The Wilderness that provide extra EXP if defe
 
     Heal all creatures by 10% at the end of each turn
 
-- Level 3 (Cost: 3 `Attribute Points`)
+- Level 3 (Cost: 5 `Attribute Points`)
 
-    Heal all creatures by 15% at the end of each turn
+    Heal all creatures by 20% at the end of each turn
 
 
 # Conditions and Curses
