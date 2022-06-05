@@ -10,14 +10,29 @@ Players take turns moving around the board and engaging in battles.  Roll to see
 
 Roll to move the specified number of spaces on the board.  When crossing through or landing on `Wilderness` tiles, add one `Footstep Counter` per wilderness tile crossed that turn, minus any counters reduced if the player has `Quiet Shoes`.  When the player completes movement, roll for a wild creature encounter (see `The Wilderness`).
 
-If a player's movement ends on a special tile, begin an encounter with that game element.  If movement ends on the same tile as another player, initiate `Combat` with that player, unless on a special tile (`Home`, `Shaman`, `Warlord`, or `Thieves`).
+If a player's movement ends on a special tile, begin an encounter with that game element.  If movement ends on the same tile as another player, initiate combat with that player, unless on a special tile (`Home`, `Shaman`, `Warlord`, or `Thieves`).
 
-To win, a player must collect all three `Sigils` and subsequently defeat all consecutive battles in `The Colosseum`.  Once a player has done this, the game ends.
+## Winning
 
+There are multiple avenues to victory.
+
+### **Domination**
+
+One path is to become the hero of `The Colosseum`.  To win, a player must collect all three `Sigils` and subsequently defeat all consecutive battles in `The Colosseum`.
+
+### **Collector**
+
+Another way to win is to catch a total of 15 creatures.  Although no one may hold more than three creatures at a time, if a player successfully catches 15 creatures throughout the game, that player becomes `Creature Master`, ending the game.
+
+### **Survivalist**
+
+When the creature deck is empty, players may duel in sudden death.  All `Sigils` become inactive.  The victor of each duel may collect creatures from the defeated player as they are removed from play.  The last player standing wins.
 
 # Creatures
 
 Creatures do battle by attacking and defending.  When a creature's `HP` falls to zero, the creature is unable to battle until revived at `Home` or by a `Shaman`.
+
+There are multiple tiers of creatures, and some have unique abilites.
 
 ## **Attribute Points**
 
@@ -39,6 +54,8 @@ The base defense value used to mitigate damage done by the aggressor's `Attack` 
 ## **Wild Creatures**
 
 Wild creatures are encountered when crossing `Wilderness` tiles on the game board.  They can be defeated or caught.  Catching a wild creature awards 2 EXP points, while defeating it yields a single EXP point.
+
+When a creature is caught, a player can choose to either discard the new creature, or keep it to replace one of the three in their hand.  `Attribute Points` from the discarded creature are lost and do not transfer (except for those granted by the `Sigil of Power`).
 
 
 # Levels and EXP
@@ -66,6 +83,8 @@ All players begin the game at level 1.  Whenever a creature is defeated in battl
     5 `Attribute Points` earned
 
 # Combat
+
+In addition to basic combat abilities, creatures may have individual combat abilities.
 
 ## **Player vs Player**
 
@@ -231,13 +250,13 @@ Thieves are combatants found among The Wilderness that provide extra EXP if defe
 
 ## **Ascension**
 
-`Ascension` swaps two players' positions on the game board.  It can only be used once per charge; i.e., once a player uses `Ascension`, they must purchase another one using more `Attribute Points`.  Furthermore, the player receives `Astral Sickness` after teleporting, and cannot use `Ascension` on the next turn.
+`Ascension` swaps any two players' positions on the game board.  It can only be used once per charge; i.e., once a player uses `Ascension`, they must purchase another one using more `Attribute Points`.  Furthermore, the player receives `Astral Sickness` after casting, and cannot use `Ascension` on the next turn.
 
 - Level 1 (Cost: 3 `Attribute Points` per charge)
 
 ## **Quiet Shoes**
 
-`Quiet Shoes` slow the accumulation of foostep counters in the wilderness.
+`Quiet Shoes` slows the accumulation of foostep counters in the wilderness.
 
 - Level 1 (Cost: 1 `Attribute Point`):
 
