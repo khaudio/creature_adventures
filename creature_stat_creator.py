@@ -1,5 +1,38 @@
+import itertools
 import random
-import statistics
+
+
+class TieredObjectBase:
+    tiers = ('Common', 'Uncommon', 'Rare', 'Epic', 'Legendary')
+    tieredVolumeThresholds = {0: 0.56, 1: 0.26, 2: 0.12, 3: 0.06, 4: 0.00}
+    tierQualityThresholds = {
+            0: [0.50, 0.56],
+            1: [0.56, 0.63],
+            2: [0.63, 0.70],
+            3: [0.70, 0.80],
+            4: [0.80, 1.00]
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.uid = None
+        self.tier = None
+
+
+class Creature(TieredObjectBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.baseAttack = 0
+        self.baseDefense = 0
+        self.baseHP = 1
+
+    def __str__(self):
+        return '\n'.join((
+                f'Creature UID {self.uid}:',
+                f'Tier:\t\t\t{self.tiers[self.tier]}',
+                f'Base Attack:\t{self.baseAttack}',
+                f'Base Defense:\t{self.baseDefense}',
+                f'Base HP:\t\t{self.baseHP}'
+            ))
 
 
 class Deck(list):
@@ -7,136 +40,82 @@ class Deck(list):
         super().__init__(*args, **kwargs)
     
     def __str__(self, *args, **kwargs):
-        return ''.join(i.__str__() for i in self)
+        return '\n\n'.join(i.__str__() for i in self)
+
+    def __add__(self, other):
+        self += other
+        return self
+
+    def combine(self, *others, resetUID = True):
+        self += itertools.chain(*others)
+        if resetUID:
+            uidCounter = 1
+            for item in self:
+                item.uid = uidCounter
+                uidCounter += 1
+        return self
 
     def shuffle(self):
         random.shuffle(self)
         return self
 
 
-class Creature:
-    statTotalMinimums = (15, 17, 19, 21)
-    statTotalMaximums = (17, 19, 21, 24)
-    rarityStrs = ('Common', 'Uncommon', 'Rare', 'Epic')
+def create_creature(tier, maxPossibleStatPoints, weightVariance, uid = None):
+    newCreature = Creature()
 
-    def __init__(self):
-        self.uid = None
-        self.rarity = 0
-        self.baseAttack = 0
-        self.baseDefense = 0
-        self.baseHP = 1
+    newCreature.tier = tier
+    newCreature.uid = uid
 
-    def stat_total_minimum(self):
-        return self.statTotalMinimums[self.rarity]
+    # Calculate total stat points available for this creature
+    remainingStatPoints = random.uniform(
+            Creature.tierQualityThresholds[tier][0],
+            Creature.tierQualityThresholds[tier][1]
+        ) * maxPossibleStatPoints
 
-    def stat_total_maximum(self):
-        return self.statTotalMaximums[self.rarity]
+    # Determine how weighted towards HP stats will be distributed
+    weight = random.uniform(0.45 - weightVariance, 0.75 + weightVariance)
 
-    def stat_ratio(self):
-        return (self.stat_total() / self.stat_total_maximum())
+    # Assign base HP value
+    newCreature.baseHP = round(remainingStatPoints * weight)
+    remainingStatPoints -= newCreature.baseHP
 
-    def stat_total(self):
-        return (self.baseAttack + self.baseDefense + self.baseHP)
+    # Determine attack weighting
+    newCreature.baseAttack = round(random.uniform(0.34, 0.67) * remainingStatPoints)
 
-    def rarity_str(self):
-        return self.rarityStrs[self.rarity]
+    # Give remaining points to defense
+    newCreature.baseDefense = round(remainingStatPoints - newCreature.baseAttack)
 
-    def __str__(self):
-        return f'''
-        Creature UID {self.uid}:
-        Rarity:\t\t\t{self.rarity_str()}
-        Stat Ratio:\t\t{round(self.stat_ratio(), 2)}
-        Stat Total:\t\t{self.stat_total()} / {self.stat_total_maximum()}
-        Base Attack:\t{self.baseAttack}
-        Base Defense:\t{self.baseDefense}
-        Base HP:\t\t{self.baseHP}\n'''
+    return newCreature
 
 
-def stat_generator(targetMean):
-    return int(round(targetMean * random.lognormvariate(0.0, 0.173)))
+def create_deck_tiers(totalNumCards, maxPossibleStatPoints):
+    # Calculate nubmer of cards per tier
+    cardsPerTier = [
+            int(round(Creature.tieredVolumeThresholds[i] * totalNumCards))
+            for i in TieredObjectBase.tieredVolumeThresholds
+        ]
+
+    # Correct floating point or rounding errors by adding or removing common cards
+    cardsPerTier[0] += totalNumCards - sum(cardsPerTier)
+
+    weightVariance = 0.0
+    for tier, tierNumCards in enumerate(cardsPerTier):
+        # Allow more chaotic stat distribution per tier
+        weightVariance += 0.035
+        for i in range(tierNumCards):
+            newCreature = create_creature(tier, maxPossibleStatPoints, weightVariance, uid = (tier + i))
+            yield newCreature
 
 
-def trim_stats(creature):
-    '''Trim random stats until stats are within limits'''
-    while True:
-        statTotal = creature.stat_total()
-        if (statTotal > creature.stat_total_maximum()):
-            pick = random.randint(0, 2)
-            if not pick and creature.baseAttack > 1:
-                creature.baseAttack -= 1
-            elif pick == 1 and creature.baseDefense:
-                creature.baseDefense -= 1
-            elif creature.baseHP > 5:
-                creature.baseHP -= 1
-        elif (statTotal < creature.stat_total_minimum()):
-            pick = random.randint(0, 2)
-            if not pick:
-                creature.baseAttack += 1
-            elif pick == 1:
-                creature.baseDefense += 1
-            else:
-                creature.baseHP += 1
-        else:
-            break
-    return creature
-
-
-def create_sub_deck(numCreatures, targetMeanAtk, targetMeanDef, targetMeanHP, rarity):
-    deck = Deck()
-
-    for i in range(numCreatures):
-        newCreature = Creature()
-
-        newCreature.baseAttack = stat_generator(targetMeanAtk)
-        newCreature.baseDefense = stat_generator(targetMeanDef)
-        newCreature.baseHP = stat_generator(targetMeanHP)
-        newCreature.rarity = rarity
-
-        deck.append(trim_stats(newCreature))
-
-    return deck
-
-
-def combine_decks(*decks, shuffle = True):
-    deck = Deck()
-
-    uid = 1
-    
-    # Combine sub decks
-    for d in decks:
-        deck += d
-    
-    # Re-assign all UIDs to be unique
-    for creature in deck:
-        creature.uid = uid
-        uid += 1
-    
-    # Shuffle the deck
-    if shuffle:
-        deck.shuffle()
-    
+def create_deck(totalNumCards):
+    deck = Deck(c for c in create_deck_tiers(totalNumCards, 30))
+    deck.shuffle()
     return deck
 
 
 def main():
-    # Create sub decks by rarity and combine
-
-    # Normal creatures
-    normalSubDeck = create_sub_deck(28, 3, 3, 10, 0)
-
-    # Uncommon creatures
-    uncommonSubDeck = create_sub_deck(13, 3.25, 3.25, 10.75, 1)
-
-    # Rare creatures
-    rareSubDeck = create_sub_deck(6, 3.75, 3.75, 11, 2)
-
-    # Epic creatures
-    epicSubDeck = create_sub_deck(3, 5.25, 5.25, 13.5, 3)
-
-    deck = combine_decks(normalSubDeck, uncommonSubDeck, rareSubDeck, epicSubDeck, shuffle = False)
-
+    deck = create_deck(50)
     print(deck)
 
 
 main()
-
