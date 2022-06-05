@@ -3,8 +3,13 @@ import random
 
 
 class TieredObjectBase:
-    tiers = ('Common', 'Uncommon', 'Rare', 'Epic', 'Legendary')
-    tieredVolumeThresholds = {0: 0.56, 1: 0.26, 2: 0.12, 3: 0.06, 4: 0.00}
+    tierNames = ('Common', 'Uncommon', 'Rare', 'Epic', 'Legendary')
+
+    # Relative ratios of how many objects of each tier should be created.
+    # No Legendary objects by default
+    tieredVolumeRatios = {0: 0.56, 1: 0.26, 2: 0.12, 3: 0.06, 4: 0.00}
+
+    # Relative ratios of stat points available to items in each tier
     tierQualityThresholds = {
             0: [0.50, 0.56],
             1: [0.56, 0.63],
@@ -28,10 +33,10 @@ class Creature(TieredObjectBase):
     def __str__(self):
         return '\n'.join((
                 f'Creature UID {self.uid}:',
-                f'Tier:\t\t\t{self.tiers[self.tier]}',
+                f'Tier:\t\t\t\t\t{self.tierNames[self.tier]}',
                 f'Base Attack:\t{self.baseAttack}',
                 f'Base Defense:\t{self.baseDefense}',
-                f'Base HP:\t\t{self.baseHP}'
+                f'Base HP:\t\t\t{self.baseHP}'
             ))
 
 
@@ -42,17 +47,26 @@ class Deck(list):
     def __str__(self, *args, **kwargs):
         return '\n\n'.join(i.__str__() for i in self)
 
+    @staticmethod
+    def _sequence_uids(iterable):
+        counter = 1
+        for item in iterable:
+            item.uid = counter
+            counter += 1
+        return iterable
+
     def __add__(self, other):
-        self += other
+        merged = self + other
+        return self._sequence_uids(merged)
+
+    def reset_uids(self):
+        self = self._sequence_uids(self)
         return self
 
     def combine(self, *others, resetUID = True):
         self += itertools.chain(*others)
         if resetUID:
-            uidCounter = 1
-            for item in self:
-                item.uid = uidCounter
-                uidCounter += 1
+            self.reset_uids()
         return self
 
     def shuffle(self):
@@ -88,11 +102,13 @@ def create_creature(tier, maxPossibleStatPoints, weightVariance, uid = None):
     return newCreature
 
 
-def create_deck_tiers(totalNumCards, maxPossibleStatPoints):
+def create_deck(totalNumCards, maxPossibleStatPoints = 30, shuffle = True):
+    deck = Deck()
+
     # Calculate nubmer of cards per tier
     cardsPerTier = [
-            int(round(Creature.tieredVolumeThresholds[i] * totalNumCards))
-            for i in TieredObjectBase.tieredVolumeThresholds
+            int(round(Creature.tieredVolumeRatios[i] * totalNumCards))
+            for i in Creature.tieredVolumeRatios
         ]
 
     # Correct floating point or rounding errors by adding or removing common cards
@@ -103,18 +119,26 @@ def create_deck_tiers(totalNumCards, maxPossibleStatPoints):
         # Allow more chaotic stat distribution per tier
         weightVariance += 0.035
         for i in range(tierNumCards):
-            newCreature = create_creature(tier, maxPossibleStatPoints, weightVariance, uid = (tier + i))
-            yield newCreature
+            newCreature = create_creature(
+                    tier,
+                    maxPossibleStatPoints,
+                    weightVariance
+                )
+            deck.append(newCreature)
 
+    # Deduplicate UIDs
+    deck.reset_uids()
 
-def create_deck(totalNumCards):
-    deck = Deck(c for c in create_deck_tiers(totalNumCards, 30))
-    deck.shuffle()
+    if shuffle:
+        deck.shuffle()
+    
     return deck
 
 
 def main():
-    deck = create_deck(50)
+    # Don't shuffle the deck so we can inspect each tier
+    deck = create_deck(50, shuffle = False)
+
     print(deck)
 
 
