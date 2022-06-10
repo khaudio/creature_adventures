@@ -5,4 +5,3 @@ from dice import *
 def main():
     pass
 
-
