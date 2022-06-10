@@ -1,43 +1,5 @@
+from creature import *
 import itertools
-import random
-
-
-class TieredObjectBase:
-    tierNames = ('Common', 'Uncommon', 'Rare', 'Epic', 'Legendary')
-
-    # Relative ratios of how many objects of each tier should be created.
-    # No Legendary objects by default
-    tieredVolumeRatios = {0: 0.56, 1: 0.26, 2: 0.12, 3: 0.06, 4: 0.00}
-
-    # Relative ratios of stat points available to items in each tier
-    tierQualityThresholds = {
-            0: [0.50, 0.56],
-            1: [0.56, 0.63],
-            2: [0.63, 0.70],
-            3: [0.70, 0.80],
-            4: [0.80, 1.00]
-        }
-
-    def __init__(self, *args, **kwargs):
-        self.uid = None
-        self.tier = None
-
-
-class Creature(TieredObjectBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.baseAttack = 0
-        self.baseDefense = 0
-        self.baseHP = 1
-
-    def __str__(self):
-        return '\n'.join((
-                f'Creature UID {self.uid}:',
-                f'Tier:\t\t\t\t\t{self.tierNames[self.tier]}',
-                f'Base Attack:\t{self.baseAttack}',
-                f'Base Defense:\t{self.baseDefense}',
-                f'Base HP:\t\t\t{self.baseHP}'
-            ))
 
 
 class Deck(list):
@@ -102,7 +64,7 @@ def create_creature(tier, maxPossibleStatPoints, weightVariance, uid = None):
     return newCreature
 
 
-def create_deck(totalNumCards, maxPossibleStatPoints = 30, shuffle = True):
+def create_creature_deck(totalNumCards, maxPossibleStatPoints = 30, shuffle = True):
     deck = Deck()
 
     # Calculate nubmer of cards per tier
@@ -135,11 +97,3 @@ def create_deck(totalNumCards, maxPossibleStatPoints = 30, shuffle = True):
     return deck
 
 
-def main():
-    # Don't shuffle the deck so we can inspect each tier
-    deck = create_deck(50, shuffle = False)
-
-    print(deck)
-
-
-main()
