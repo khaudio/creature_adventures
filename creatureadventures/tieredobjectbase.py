@@ -1,3 +1,6 @@
+
+
+
 class TieredObjectBase:
     tierNames = ('Common', 'Uncommon', 'Rare', 'Epic', 'Legendary')
 

@@ -41,11 +41,11 @@ class Battle:
         else:
             self._offensiveIndex = 0
             self._defensiveIndex = 1
-    
-    def _process_actions(self, attackerAction, defenderAction):
-        if attackerAction in self.attacker.availableActions:
-            pass
-        else:
-            raise ValueError('Action unavailable to player')
+
+    def stage_action(self, player, action):
+        pass
+
+    def process_actions(self):
+        pass
 
 

@@ -1,4 +1,5 @@
 from creature import *
+import collections
 
 
 class Player:
