@@ -1,4 +1,5 @@
 from tieredobjectbase import *
+import dataclass
 
 
 class CreatureBase(TieredObjectBase):
@@ -18,6 +19,20 @@ class CreatureBase(TieredObjectBase):
             ))
 
 
+@dataclass.dataclass
+class TimedModifier:
+    '''
+    Modifiers to creatures that expire after numTurns.
+    value can be a positive or negative integer.
+    '''
+    
+    def __init__(self):
+        self.numTurns = 0
+        self.attackModifier = 0
+        self.defenseModifier = 0
+        self.hpModifier = 0
+
+
 class Creature(CreatureBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,12 +40,19 @@ class Creature(CreatureBase):
         self.defenseModifier = 0
         self.hpModifier = 0
         
+        # Modifiers that expire after a specified number of turns
+        self.timedModifiers = []
+        
         # Special actions per creature
         self.availableActions = []
     
     @property
     def attack(self):
-        return self.baseAttack + self.attackModifier
+        return (
+                self.baseAttack
+                + self.attackModifier
+                + sum(m.attackModifier for m in self.timedModifiers)
+            )
     
     @attack.setter
     def attack(self, attrPoints):
@@ -40,7 +62,11 @@ class Creature(CreatureBase):
 
     @property
     def defense(self):
-        return self.baseDefense + self.defenseModifier
+        return (
+                self.baseDefense
+                + self.defenseModifier
+                + (m.defenseModifier for m in self.timedModifiers)
+            )
     
     @defense.setter
     def defense(self, attrPoints):
@@ -50,7 +76,10 @@ class Creature(CreatureBase):
     
     @property
     def hp(self):
-        return self.baseHP + self.hpModifier
+        return (
+                self.baseHP
+                + self.hpModifier
+                + (m.hpModifier for m in self.timedModifiers)
     
     @hp.setter
     def hp(self, attrPoints):

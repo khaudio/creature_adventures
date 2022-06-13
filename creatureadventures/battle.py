@@ -56,36 +56,6 @@ class Battle:
             self._offensiveIndex = 0
             self._defensiveIndex = 1
 
-    def strike(self):
-        result = roll(1, 10)
-        if result == 1:
-            print('Miss')
-            return 0
-        elif result in (2, 3):
-            print('Unmitigated hit')
-            return self.attacker.attack
-        elif result in range(4, 9):
-            print('Deflected hit')
-            damage = self.attacker.attack - self.defender.defense
-            return trim_min(damage, 0)
-        elif result == 9:
-            print('Counterstrike')
-            damage = self.attacker.defense - self.defender.attack
-            return trim_min(damage, 0)
-        elif result == 10:
-            print('Critical hit')
-            damage = (self.attacker.attack * 2) - self.defender.defense
-            return trim_max(damage, 0)
-
-    def meditate(self):
-        result = roll(1, 10)
-        if result == 1:
-            print('No change to attack')
-            return 0
-        elif result in range(2, 7):
-            pass
-
-
     def stage_action(self, player, action):
         pass
 

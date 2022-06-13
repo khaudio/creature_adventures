@@ -99,7 +99,7 @@ Combat actions include:
         - 10% chance for a miss (No damage done)
         - 20% chance for an unmitigated hit (Attacking creature's base `Attack` power)
         - 50% chance for a deflected hit (Attacker's `Attack` power minus defender's `Defense`)
-        - 10% chance to receive a counterstrike (Opposing creature's `Attack` power minus attacker's `Defense` damage received)
+        - 10% chance to receive a counterstrike ('Attack' power compared and creature with less takes difference as damage)
         - 10% chance for a critical hit (Double `Attack` power minus defender's `Defense`)
     - `Meditate` (Roll to increase `Attack` for one turn)
         - 10% chance for no change to `Attack`
