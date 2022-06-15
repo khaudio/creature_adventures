@@ -1,28 +1,34 @@
 import random
-
+import dataclasses
 
 # Roll dice
 
-def roll_dice(units = 1, sides = 6):
-    result = []
-    for i in range(self.numUnits):
-        currentRoll = random.randint(1, sides + 1)
-        print(f'Rolled {currentRoll}')
-        result.append(currentRoll)
-    return result
+def roll_dice(sides = 6):
+    return random.randint(1, sides)
 
 
-@dataclass.dataclass
 class Outcome:
-    def __init__(self, callback, ratio):
+    def __init__(self, callback, ratio = None):
         self.callback = callback
         self.ratio = ratio
+        self._upperThreshold = None
 
+    @property
+    def ratio(self):
+        return self._ratio
+    
+    @ratio.setter
+    def ratio(self, value = None):
+        self._ratio = value
+        self._auto = True if value is None else False
 
 class Dice:
     def __init__(self):
-        self.outcomes = {}
-        self._ratioRemaining = 1.0
+        # All possible outcomes for this roll
+        self.outcomes = []
+
+        # Max for all combined outcome ratios is 1.0
+        self._ratioTotal = 0.0
     
     def _resolve(self):
         '''Distribute probability equally
@@ -31,28 +37,30 @@ class Dice:
         for outcome in self.outcomes:
             if outcome.ratio is None:
                 unassigned += 1
-        calculated = self._ratioRemaining / unassigned
+        calculated = self._ratioTotal / unassigned
         for outcome in self.outcomes:
-            if outcome.ratio is None:
+            if outcome._auto:
                 outcome.ratio = calculated
-    
-    def add_outcome(self, outcome):
-        if (
-                outcome.ratio is not None
-                and (outcome.ratio <= self._ratioRemaining)
-            ):
-            self.outcomes.add(outcome)
-            self._ratioRemaining -= outcome.ratio
-        else:
-            raise ValueError('Outcome probability ratio is higher than ratio remaining')
+            outcome._upperThreshold =  self._ratioTotal + outcome.ratio
+            self._ratioTotal -= outcome.ratio
+        if self._ratioTotal > 1.0:
+            raise ValueError(
+                    'Outcome probability ratio is higher'
+                    + ' than remaining probability available'
+                )
+        self.outcomes.sort(key=outcome._upperThreshold)
+
+    def add_outcomes(self, *outcomes):
+        for outcome in outcomes:
+            self.outcomes.append(outcome)
         self._resolve()
     
     def roll(self):
-        ratioSum = 0.0
+        lowerThreshold = 0.0
         result = random.random()
+        print(f'Rolled {result}')
         for outcome in self.outcomes:
-            if ratioSum <= outcome.ratio < (ratioSum + outcome.ratio):
+            if lowerThreshold <= result < outcome._upperThreshold:
                 return outcome.callback
-            ratioSum += outcome.ratio
-    
-    
+            lowerThreshold = outcome._upperThreshold
+

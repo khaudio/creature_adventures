@@ -1,5 +1,6 @@
-from creature import *
+import random
 import itertools
+from creature import *
 
 
 class Deck(list):
@@ -7,7 +8,7 @@ class Deck(list):
         super().__init__(*args, **kwargs)
     
     def __str__(self, *args, **kwargs):
-        return '\n\n'.join(i.__str__() for i in self)
+        return '\n\n'.join(i._stat_str() for i in self)
 
     @staticmethod
     def _sequence_uids(iterable):
@@ -34,6 +35,9 @@ class Deck(list):
     def shuffle(self):
         random.shuffle(self)
         return self
+    
+    def draw(self):
+        return self.pop()
 
 
 def create_creature(tier, maxPossibleStatPoints, weightVariance, uid = None):
@@ -52,11 +56,12 @@ def create_creature(tier, maxPossibleStatPoints, weightVariance, uid = None):
     weight = random.uniform(0.45 - weightVariance, 0.75 + weightVariance)
 
     # Assign base HP value
-    newCreature.baseHP = round(remainingStatPoints * weight)
-    remainingStatPoints -= newCreature.baseHP
+    newCreature.baseMaxHP = round(remainingStatPoints * weight)
+    newCreature.heal()
+    remainingStatPoints -= newCreature.baseMaxHP
 
     # Determine attack weighting
-    newCreature.baseAttack = round(random.uniform(0.34, 0.67) * remainingStatPoints)
+    newCreature.baseAttack = round(random.uniform(0.54, 0.88) * remainingStatPoints)
 
     # Give remaining points to defense
     newCreature.baseDefense = round(remainingStatPoints - newCreature.baseAttack)
