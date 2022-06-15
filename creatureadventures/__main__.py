@@ -38,7 +38,7 @@ def demo_test():
 
 def main():
     print('Starting Adventure...')
-    # demo_test()
+    demo_test()
 
 
 main()
