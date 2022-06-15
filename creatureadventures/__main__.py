@@ -18,29 +18,22 @@ def demo_test():
             p.creatures.append(deck.draw())
         print(p.creatures[0])
     
-    print('\n\n')
+    print('\n')
 
-    b = Battle(p1.creatures[0], p2.creatures[0])
-    s1 = Strike(p1.creatures[0], p2.creatures[0])
-    s1.run()
-    d1 = Dodge(p2.creatures[0], p1.creatures[0])
-    d1.run()
-    b.stage_action(s1)
-    b.stage_action(d1)
+    p1C = p1.creatures[0]
+    p2C = p2.creatures[0]
+
+    b = Battle(p1C, p2C)
+    b.stage_action(Strike(p1C, p2C))
+    b.stage_action(Dodge(p2C, p1C))
     b.process_actions()
     
-    while not any(not c.hp for c in b._participants):
-        p1a = Strike(p1.creatures[0], p2.creatures[0])
-        p1a.run()
-        p2a = Strike(p2.creatures[0], p1.creatures[0])
-        p2a.run()
-
-        b.stage_action(p1a)
-        b.stage_action(p2a)
+    while b.active():
+        b.stage_action(Strike(p1C, p2C))
+        b.stage_action(Strike(p2C, p1C))
         b.process_actions()
 
-    for p in players:
-        print(p.creatures[0])
+    print(p1C, '\n', p2C)
 
 
 def main():
