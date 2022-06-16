@@ -89,10 +89,10 @@ class Battle:
             self.match_participant(a.invoker).hp += a.invokerHPDelta
             self.match_participant(a.opponent).hp += a.opponentHPDelta
         print(
-                f'\n\t\tUID {self._participants[0].uid}'
-                + f' HP = {self._participants[0].hp} / {self._participants[0].maxHP}'
-                + f'\t\tUID {self._participants[1].uid}'
-                + f' HP = {self._participants[1].hp} / {self._participants[1].maxHP}\n'
+                f'\t\tUID {self._participants[0].uid}'
+                + f'\tHP = {self._participants[0].hp} / {self._participants[0].maxHP}'
+                + f'\n\t\tUID {self._participants[1].uid}'
+                + f'\tHP = {self._participants[1].hp} / {self._participants[1].maxHP}\n'
             )
 
     def run(self):

@@ -111,7 +111,7 @@ class Strike(Action):
             damage = trim_min((self.invoker.attack * 2) - self.opponent.defense, 0)
             print(f'UID {self.invoker.uid} critically hit UID {self.opponent.uid} for {damage}')
             self.damage_opponent(damage)
-        print(f'\t\tUID {self.invoker.uid} HP Delta = {self.invokerHPDelta}\t\tUID {self.opponent.uid} HP Delta = {self.opponentHPDelta}')
+        print(f'\n\t\tUID {self.invoker.uid}\tHP Delta = {self.invokerHPDelta}\n\t\tUID {self.opponent.uid}\tHP Delta = {self.opponentHPDelta}\n')
 
 
 class Meditate(Action):
