@@ -12,7 +12,7 @@ class Battle:
         # self._defensiveIndex = 1
         # self.actionQueue = collections.deque()
         self.actionQueue = multiprocessing.Queue()
-        print(f'{attackingCreature.uid} begins a battle with {defendingCreature.uid}')
+        print(f'UOD {attackingCreature.uid} begins a battle with UID {defendingCreature.uid}')
 
     # @property
     # def attacker(self):

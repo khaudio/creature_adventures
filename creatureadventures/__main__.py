@@ -19,6 +19,7 @@ def demo_test():
         print(p.creatures[0])
     
     print('\n')
+    input('press Enter to batlle...')
 
     p1C = p1.creatures[0]
     p2C = p2.creatures[0]
@@ -33,7 +34,10 @@ def demo_test():
         b.run()
     
     victor = b.get()
-    print(f'Battle victor: UID {victor.uid}\n')
+    if victor is None:
+        print('Battle is a tie!')
+    else:
+        print(f'Battle victor: UID {victor.uid}\n')
 
     print(p1C, '\n', p2C, '\n')
 

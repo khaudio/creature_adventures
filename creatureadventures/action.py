@@ -92,24 +92,24 @@ class Strike(Action):
     def run(self):
         result = roll_dice(10)
         if result == 1:
-            print(f'{self.invoker.uid} missed {self.opponent.uid}')
+            print(f'UID {self.invoker.uid} missed UID {self.opponent.uid}')
             self.evaded = True
             return
         elif result in (2, 3):
             damage = trim_min(self.invoker.attack, 0)
-            print(f'{self.invoker.uid} hit {self.opponent.uid} unmitigated for {damage}')
+            print(f'UID {self.invoker.uid} hit UID {self.opponent.uid} unmitigated for {damage}')
             self.damage_opponent(damage)
         elif result in range(4, 9):
             damage = trim_min(self.invoker.attack - self.opponent.defense, 0)
-            print(f'{self.invoker.uid} hit {self.opponent.uid} deflected for {damage}')
+            print(f'UID {self.invoker.uid} hit UID {self.opponent.uid} deflected for {damage}')
             self.damage_opponent(damage)
         elif result == 9:
-            print(f'{self.opponent.uid} counterstruck {self.invoker.uid}')
+            print(f'UID {self.opponent.uid} counterstruck UID {self.invoker.uid}')
             self.damage_opponent(self.invoker.attack - self.opponent.defense)
             self.damage_invoker(self.opponent.attack - self.invoker.defense)
         elif result == 10:
             damage = trim_min((self.invoker.attack * 2) - self.opponent.defense, 0)
-            print(f'{self.invoker.uid} critically hit {self.opponent.uid} for {damage}')
+            print(f'UID {self.invoker.uid} critically hit UID {self.opponent.uid} for {damage}')
             self.damage_opponent(damage)
         print(f'\t\tUID {self.invoker.uid} HP Delta = {self.invokerHPDelta}\t\tUID {self.opponent.uid} HP Delta = {self.opponentHPDelta}')
 
@@ -121,18 +121,18 @@ class Meditate(Action):
     def run(self):
         result = roll_dice(10)
         if result == 1:
-            print(f'No change to {self.invoker.uid} attack')
+            print(f'No change to UID {self.invoker.uid} attack')
             return
         attackBoost = TimedModifier()
         attackBoost.numTurns = 1
         if result in range(2, 7):
-            print(f'{self.invoker.uid} attack raised by 30%')
+            print(f'UID {self.invoker.uid} attack raised by 30%')
             attackBoost.attackModifier = round(self.invoker.attack * 0.3)
         elif result in range(7, 10):
-            print(f'{self.invoker.uid} attack raised by 50%')
+            print(f'UID {self.invoker.uid} attack raised by 50%')
             attackBoost.attackModifier = round(self.invoker.attack * 0.5)
         elif result == 10:
-            print(f'{self.invoker.uid} attack raised by 100%')
+            print(f'UID {self.invoker.uid} attack raised by 100%')
             attackBoost.attackModifier = self.invoker.attack * 2
         self.invoker.add_modifier(attackBoost)
 
@@ -144,18 +144,18 @@ class Brace(Action):
     def run(self):
         result = roll_dice(10)
         if result == 1:
-            print(f'No change to {self.invoker.uid} defense')
+            print(f'No change to UID {self.invoker.uid} defense')
             return
         defenseBoost = TimedModifier()
         defenseBoost.numTurns = 1
         if result in range(2, 7):
-            print(f'{self.invoker.uid} defense raised by 30%')
+            print(f'UID {self.invoker.uid} defense raised by 30%')
             defenseBoost.defenseModifier = round(self.invoker.defense * 0.3)
         elif result in range(7, 10):
-            print(f'{self.invoker.uid} defense raised by 50%')
+            print(f'UID {self.invoker.uid} defense raised by 50%')
             defenseBoost.defenseModifier = round(self.invoker.defense * 0.5)
         elif result == 10:
-            print(f'{self.invoker.uid} defense raised by 100%')
+            print(f'UID {self.invoker.uid} defense raised by 100%')
             defenseBoost.defenseModifier = self.invoker.defense * 2
         self.invoker.add_modifier(defenseBoost)
 
@@ -167,9 +167,9 @@ class Dodge(Action):
     def run(self):
         result = roll_dice(10)
         if result in range(1, 7):
-            print(f'{self.invoker.uid} dodged unsuccessfully')
+            print(f'UID {self.invoker.uid} dodged unsuccessfully')
         else:
-            print(f'{self.invoker.uid} dodged attack')
+            print(f'UID {self.invoker.uid} dodged attack')
             self.evasive = True
     
 class InnerPeace(Action):
@@ -178,7 +178,7 @@ class InnerPeace(Action):
 
     def run(self):
         healAmount = self.invoker.hp * 2
-        print(f'{self.invoker.uid} cast Inner Peace and heals for {healAmount}')
+        print(f'UID {self.invoker.uid} cast Inner Peace and heals for {healAmount}')
         if self.invoker.hp > 0:
             self.invoker.hp = healAmount
 
