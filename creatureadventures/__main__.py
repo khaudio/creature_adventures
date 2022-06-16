@@ -26,14 +26,16 @@ def demo_test():
     b = Battle(p1C, p2C)
     b.stage_action(Strike(p1C, p2C))
     b.stage_action(Dodge(p2C, p1C))
-    b.process_actions()
     
     while b.active():
         b.stage_action(Strike(p1C, p2C))
         b.stage_action(Strike(p2C, p1C))
-        b.process_actions()
+        b.run()
+    
+    victor = b.get()
+    print(f'Battle victor: UID {victor.uid}\n')
 
-    print(p1C, '\n', p2C)
+    print(p1C, '\n', p2C, '\n')
 
 
 def main():

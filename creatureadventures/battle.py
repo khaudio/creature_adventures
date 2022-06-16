@@ -1,3 +1,4 @@
+from re import A
 from creature import *
 from player import *
 import multiprocessing
@@ -11,7 +12,7 @@ class Battle:
         # self._defensiveIndex = 1
         # self.actionQueue = collections.deque()
         self.actionQueue = multiprocessing.Queue()
-        print(f'{attackingCreature} begins a battle with {defendingCreature}')
+        print(f'{attackingCreature.uid} begins a battle with {defendingCreature.uid}')
 
     # @property
     # def attacker(self):
@@ -47,6 +48,11 @@ class Battle:
     #         self._offensiveIndex = 0
     #         self._defensiveIndex = 1
 
+    def match_participant(self, creature):
+        for c in self._participants:
+            if c.uid == creature.uid:
+                return c
+
     def active(self):
         '''Battle is active while both creatures' HP is nonzero'''
         return all(creature.hp > 0 for creature in self._participants)
@@ -64,19 +70,34 @@ class Battle:
         action = self.actionQueue.get() if action is None else action
         action.run()
         action.apply()
+        self.match_participant(action.invoker).hp = action.invoker.hp
+        self.match_participant(action.opponent).hp = action.opponent.hp
 
     def process_action_pair(self):
         '''Process actions in pairs so that combat happens at the same time'''
         if self.actionQueue.empty() or (self.actionQueue.qsize() % 2):
             raise ValueError('Queue size must be multiple of two and not empty')
-        for _ in range(2):
-            action = self.actionQueue.get()
-            action.run()
-            action.apply()
+        actions = [self.actionQueue.get() for _ in range(2)]
+        for a in actions:
+            a.run()
+        if actions[0].evasive:
+            actions[1].evaded = True
+        if actions[1].evasive:
+            actions[0].evaded = True
+        for a in actions:
+            a.apply()
+            self.match_participant(a.invoker).hp += a.invokerHPDelta
+            self.match_participant(a.opponent).hp += a.opponentHPDelta
+        print(
+                f'\n\t\tUID {self._participants[0].uid}'
+                + f' HP = {self._participants[0].hp} / {self._participants[0].maxHP}'
+                + f'\t\tUID {self._participants[1].uid}'
+                + f' HP = {self._participants[1].hp} / {self._participants[1].maxHP}\n'
+            )
 
     def run(self):
         '''Process all staged actions two at a time until empty'''
-        while not self.actionQueue.empty() and self.active():
+        while self.active() and not self.actionQueue.empty():
             self.process_action_pair()
     
     def get(self):
@@ -84,11 +105,10 @@ class Battle:
         if not any(creature.hp > 0 for creature in self._participants):
             # Mutual knockout; tie
             return None
-        elif (creature[0].hp > 0) and (creature[1].hp <= 0):
-            return creature[0]
-        elif (creature[0].hp <= 0) and (creature[1].hp > 0):
-            return creature[1]
+        elif (self._participants[0].hp > 0) and (self._participants[1].hp <= 0):
+            return self._participants[0]
+        elif (self._participants[0].hp <= 0) and (self._participants[1].hp > 0):
+            return self._participants[1]
         else:
             # Both creatures alive but battle ended
             return None
-

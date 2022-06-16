@@ -37,10 +37,11 @@ class Action:
         # Can be a positive or negative integer
         self.invokerHPDelta = 0
         self.opponentHPDelta = 0
+        
+        # Did invoker successfully complete an evasive maneuver
+        self.evasive = False
 
-        # Whether action is offensive, defensive, etc.
-        self.actionType = None
-
+        # Did invoker fail to make contact or did opponent evade
         self.evaded = False
     
     def offset_opponent_hp(self, opponentHPOffset):
@@ -74,7 +75,7 @@ class Action:
 
     def get(self):
         '''Return hp deltas to be processed'''
-        if self.evaded and self.opponentHPDelta < 0:
+        if self.evaded:
             self.opponentHPDelta = 0
         return (self.invokerHPDelta, self.opponentHPDelta)
     
@@ -95,25 +96,22 @@ class Strike(Action):
             self.evaded = True
             return
         elif result in (2, 3):
-            print(f'{self.invoker.uid} hit {self.opponent.uid} unmitigated')
             damage = trim_min(self.invoker.attack, 0)
+            print(f'{self.invoker.uid} hit {self.opponent.uid} unmitigated for {damage}')
             self.damage_opponent(damage)
         elif result in range(4, 9):
-            print(f'{self.invoker.uid} hit {self.opponent.uid} deflected')
             damage = trim_min(self.invoker.attack - self.opponent.defense, 0)
+            print(f'{self.invoker.uid} hit {self.opponent.uid} deflected for {damage}')
             self.damage_opponent(damage)
         elif result == 9:
             print(f'{self.opponent.uid} counterstruck {self.invoker.uid}')
             self.damage_opponent(self.invoker.attack - self.opponent.defense)
             self.damage_invoker(self.opponent.attack - self.invoker.defense)
-            # if damage > 0:
-            #     self.damage_opponent(damage)
-            # elif damage < 0:
-            #     self.offset_invoker_hp(damage)
         elif result == 10:
-            print(f'{self.invoker.uid} critically hit {self.opponent.uid}')
             damage = trim_min((self.invoker.attack * 2) - self.opponent.defense, 0)
+            print(f'{self.invoker.uid} critically hit {self.opponent.uid} for {damage}')
             self.damage_opponent(damage)
+        print(f'\t\tUID {self.invoker.uid} HP Delta = {self.invokerHPDelta}\t\tUID {self.opponent.uid} HP Delta = {self.opponentHPDelta}')
 
 
 class Meditate(Action):
@@ -172,7 +170,7 @@ class Dodge(Action):
             print(f'{self.invoker.uid} dodged unsuccessfully')
         else:
             print(f'{self.invoker.uid} dodged attack')
-            self.evaded = True
+            self.evasive = True
     
 class InnerPeace(Action):
     def __init__(self, invoker, opponent):
