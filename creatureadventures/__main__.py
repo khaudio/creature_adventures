@@ -6,6 +6,10 @@ from core import *
 
 
 def demo_test():
+    core = CoreBase()
+    # core.create_warlords()
+    # core.create_gladiator()
+    
     deck = create_creature_deck(25)
 
     p1 = Player()
@@ -21,16 +25,19 @@ def demo_test():
     print('\n')
     input('press Enter to batlle...')
 
-    p1C = p1.creatures[0]
-    p2C = p2.creatures[0]
+    c1 = p1.creatures[0]
+    c2 = p2.creatures[0]
 
-    b = Battle(p1C, p2C)
-    b.stage_action(Strike(p1C, p2C))
-    b.stage_action(Dodge(p2C, p1C))
+    b = Battle(c1, c2, pvp = True)
+    b.stage_action(Strike(c1, c2))
+    b.stage_action(Dodge(c2, c1))
+    
+    b.stage_action(Meditate(c1, c2))
+    b.stage_action(Brace(c2, c1))
     
     while b.active():
-        b.stage_action(Strike(p1C, p2C))
-        b.stage_action(Strike(p2C, p1C))
+        b.stage_action(Strike(c2, c2))
+        b.stage_action(Strike(c2, c1))
         b.run()
     
     victor = b.get()
@@ -39,12 +46,14 @@ def demo_test():
     else:
         print(f'Battle victor: UID {victor.uid}\n')
 
-    print(p1C, '\n', p2C, '\n')
+    print(c1, '\n', c2, '\n')
 
 
 def main():
     print('Starting Adventure...')
     demo_test()
+    
+    
 
 
 main()

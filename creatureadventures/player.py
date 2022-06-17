@@ -2,7 +2,7 @@ from creature import *
 import collections
 
 
-class Player:
+class PlayerBase:
     def __init__(self, *args, **kwargs):
         self._uid = None
         self.level = 1
@@ -35,3 +35,23 @@ class Player:
     def assign_attack_attribute_points(self, creature):
         if creature in self.creatures:
             creature.attack
+
+
+class Player(PlayerBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.human = True
+
+
+class Warlord(PlayerBase):
+    def __init__(self, level, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.level = level
+        self.human = False
+
+
+class Gladiator(PlayerBase):
+    def __init__(self, level, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.level = level
+        self.human = False

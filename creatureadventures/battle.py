@@ -1,4 +1,3 @@
-from re import A
 from creature import *
 from player import *
 import multiprocessing
@@ -6,13 +5,15 @@ import itertools
 
 
 class Battle:
-    def __init__(self, attackingCreature, defendingCreature):
+    def __init__(self, attackingCreature, defendingCreature, pvp):
         self._participants = [attackingCreature, defendingCreature]
         # self._offensiveIndex = 0
         # self._defensiveIndex = 1
         # self.actionQueue = collections.deque()
         self.actionQueue = multiprocessing.Queue()
-        print(f'UOD {attackingCreature.uid} begins a battle with UID {defendingCreature.uid}')
+        # True if both players are human
+        self.pvp = pvp
+        print(f'UID {attackingCreature.uid} begins a battle with UID {defendingCreature.uid}')
 
     # @property
     # def attacker(self):
@@ -59,19 +60,21 @@ class Battle:
 
     def stage_action(self, action):
         '''Stage a single action in queue for later processing'''
+        action.pvp = self.pvp
         self.actionQueue.put(action)
 
     def process_single_action(self, action = None):
         '''Process a single action
         
         May be from queue or provided explicitly as an argument.
-        This is useful for special actions, such as those provided by items.
-        In normal play, actions should be processed in pairs'''
+        This is useful for single player as well as
+        special actions, such as those provided by items.
+        In normal pvp play, actions should be processed in pairs'''
         action = self.actionQueue.get() if action is None else action
         action.run()
         action.apply()
-        self.match_participant(action.invoker).hp = action.invoker.hp
-        self.match_participant(action.opponent).hp = action.opponent.hp
+        self.match_participant(a.invoker).hp += a.invokerHPDelta
+        self.match_participant(a.opponent).hp += a.opponentHPDelta
 
     def process_action_pair(self):
         '''Process actions in pairs so that combat happens at the same time'''
@@ -88,17 +91,20 @@ class Battle:
             a.apply()
             self.match_participant(a.invoker).hp += a.invokerHPDelta
             self.match_participant(a.opponent).hp += a.opponentHPDelta
-        print(
-                f'\t\tUID {self._participants[0].uid}'
-                + f'\tHP = {self._participants[0].hp} / {self._participants[0].maxHP}'
-                + f'\n\t\tUID {self._participants[1].uid}'
-                + f'\tHP = {self._participants[1].hp} / {self._participants[1].maxHP}\n'
-            )
 
     def run(self):
         '''Process all staged actions two at a time until empty'''
         while self.active() and not self.actionQueue.empty():
-            self.process_action_pair()
+            if self.pvp:
+                self.process_action_pair()
+            else:
+                self.process_single_action()
+            print(
+                    f'\tUID {self._participants[0].uid}'
+                    + f'\tHP = {self._participants[0].hp} / {self._participants[0].maxHP}'
+                    + f'\n\tUID {self._participants[1].uid}'
+                    + f'\tHP = {self._participants[1].hp} / {self._participants[1].maxHP}'
+                )
     
     def get(self):
         '''Return victorious creature if there is a winner'''

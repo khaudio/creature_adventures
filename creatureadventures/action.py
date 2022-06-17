@@ -24,13 +24,14 @@ class Action:
     Some actions may be used outside of battle
     '''
     
-    def __init__(self, actionName, invoker, opponent):
+    def __init__(self, actionName, invoker, opponent = None):
         self.name = actionName
         
         # Creature invoking the action
         self.invoker = invoker
         
         # Creature target of the action
+        # Not required as some actions do not require a target
         self.opponent = opponent
         
         # HP gained or lost for each creature.
@@ -43,6 +44,9 @@ class Action:
 
         # Did invoker fail to make contact or did opponent evade
         self.evaded = False
+        
+        # True if both players are human
+        self.pvp = None
     
     def offset_opponent_hp(self, opponentHPOffset):
         '''Modifies opponent creature's HP
@@ -104,14 +108,16 @@ class Strike(Action):
             print(f'UID {self.invoker.uid} hit UID {self.opponent.uid} deflected for {damage}')
             self.damage_opponent(damage)
         elif result == 9:
-            print(f'UID {self.opponent.uid} counterstruck UID {self.invoker.uid}')
-            self.damage_opponent(self.invoker.attack - self.opponent.defense)
-            self.damage_invoker(self.opponent.attack - self.invoker.defense)
+            damage = self.invoker.attack - self.opponent.defense
+            counter = self.opponent.attack - self.invoker.defense
+            self.damage_opponent(damage)
+            self.damage_invoker(counter)
+            print(f'UID {self.invoker.uid} struck UID {self.opponent.uid} for {damage}\nUID {self.opponent.uid} counterstruck UID {self.invoker.uid} for {counter}')
         elif result == 10:
             damage = trim_min((self.invoker.attack * 2) - self.opponent.defense, 0)
             print(f'UID {self.invoker.uid} critically hit UID {self.opponent.uid} for {damage}')
             self.damage_opponent(damage)
-        print(f'\n\t\tUID {self.invoker.uid}\tHP Delta = {self.invokerHPDelta}\n\t\tUID {self.opponent.uid}\tHP Delta = {self.opponentHPDelta}\n')
+        print(f'\tUID {self.invoker.uid}\tHP Delta = {self.invokerHPDelta}\n\tUID {self.opponent.uid}\tHP Delta = {self.opponentHPDelta}')
 
 
 class Meditate(Action):
@@ -156,7 +162,7 @@ class Brace(Action):
             defenseBoost.defenseModifier = round(self.invoker.defense * 0.5)
         elif result == 10:
             print(f'UID {self.invoker.uid} defense raised by 100%')
-            defenseBoost.defenseModifier = self.invoker.defense * 2
+            defenseBoost.defenseModifier = self.invoker.defense
         self.invoker.add_modifier(defenseBoost)
 
 
@@ -177,8 +183,17 @@ class InnerPeace(Action):
         super().__init__('Inner Peace', invoker, opponent)
 
     def run(self):
-        healAmount = self.invoker.hp * 2
+        healAmount = round(self.invoker.hp * 0.5)
         print(f'UID {self.invoker.uid} cast Inner Peace and heals for {healAmount}')
         if self.invoker.hp > 0:
             self.invoker.hp = healAmount
 
+
+class Switch(Action):
+    '''Switch to specified invoker'''
+    
+    def __init__(self, switchingFrom, switchingTo, *args, **kwargs):
+        super().__init__(self, 'Switch', switchingFrom, None, *args, **kwargs)
+        self.switch = True
+        self.invoker = switchingFrom
+        self.switchingTo = switchingTo

@@ -99,19 +99,19 @@ Combat actions include:
         - 10% chance for a miss (No damage done)
         - 20% chance for an unmitigated hit (Attacking creature's base `Attack` power)
         - 50% chance for a deflected hit (Attacker's `Attack` power minus defender's `Defense`)
-        - 10% chance to receive a counterstrike (`Attack` power compared and creature with less takes difference as damage)
+        - 10% chance to receive a counterstrike (Both creatures land deflected strikes)
         - 10% chance for a critical hit (Double `Attack` power minus defender's `Defense`)
     - `Meditate` (Roll to increase `Attack` for one turn)
         - 10% chance for no change to `Attack`
         - 50% chance to raise `Attack` by 30%
-        - 30% chance to raise `Attack` by 40%
+        - 30% chance to raise `Attack` by 50%
         - 10% chance to raise `Attack` by 100%
 
 - **Defend**
     - `Brace` (Roll to boost `Defense` for one turn)
         - 10% chance for no change to `Defense`
         - 50% chance to raise `Defense` by 30%
-        - 30% chance to raise `Defense` by 40%
+        - 30% chance to raise `Defense` by 50%
         - 10% chance to raise `Defense` by 100%
     - `Dodge` (Roll to dodge attack entirely)
         - 60% chance dodge is unsuccessful
@@ -126,7 +126,7 @@ Combat actions include:
 
 ## **Single Player Combat**
 
-Single player combat is somewhat different than with PvP.  Offensive moves are still available, but the possible outcomes change.
+Single player combat differs somewhat from PvP.  Offensive moves are still available, but the possible outcomes change.
 
 - **Attack**
     - `Strike` (Roll for chances of inflicting damage)
@@ -136,10 +136,9 @@ Single player combat is somewhat different than with PvP.  Offensive moves are s
         - 10% chance for a critical hit (Double `Attack` power)
 
     - `Meditate` (Roll to increase `Attack` for one turn)
-        - 10% chance for no change to `Attack`
-        - 50% chance to raise `Attack` by 30%
-        - 30% chance to raise `Attack` by 40%
-        - 10% chance to raise `Attack` by 100%
+        - 50% chance to receive an interrupting hit from opponent
+        - 30% chance to raise `Attack` by 50%
+        - 20% chance to raise `Attack` by 100%
 
 - **Defend**
     - `Inner Peace` (Heal a pre-assigned creature for 50% HP if the player has the `Sigil of Wisdom`).  `Inner Peace` may not be used to revive a creature while in battle.
