@@ -34,9 +34,9 @@ def demo_test():
     
     b.stage_action(Meditate(c1, c2))
     b.stage_action(Brace(c2, c1))
-    
+
     while b.active():
-        b.stage_action(Strike(c2, c2))
+        b.stage_action(Strike(c1, c2))
         b.stage_action(Strike(c2, c1))
         b.run()
     

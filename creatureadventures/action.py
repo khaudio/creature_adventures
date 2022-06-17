@@ -16,7 +16,32 @@ def trim_max(value, maximum):
         return value
 
 
-class Action:
+class ActionBase:
+    '''Base class for Actions'''
+
+    def __init__(self, actionName, invoker, target = None):
+        self.name = actionName
+        
+        # Creature invoking the action
+        self.invoker = invoker
+
+        # Creature target of the action (invoker may target itself)
+        self.target = target
+
+        # True if both players are human
+        self.pvp = None
+
+    def run(self):
+        '''Process action logic'''
+
+    def get(self):
+        '''Return HP deltas to be processed'''
+    
+    def apply(self):
+        '''Reconcile HP deltas'''
+
+
+class Action(ActionBase):
     '''
     Actions are taken by creatures to cause damage or healing
     during battles
@@ -24,36 +49,26 @@ class Action:
     Some actions may be used outside of battle
     '''
     
-    def __init__(self, actionName, invoker, opponent = None):
-        self.name = actionName
-        
-        # Creature invoking the action
-        self.invoker = invoker
-        
-        # Creature target of the action
-        # Not required as some actions do not require a target
-        self.opponent = opponent
-        
+    def __init__(self, actionName, invoker, target = None):
+        super().__init__(actionName, invoker, target)
+
         # HP gained or lost for each creature.
         # Can be a positive or negative integer
         self.invokerHPDelta = 0
-        self.opponentHPDelta = 0
+        self.targetHPDelta = 0
         
         # Did invoker successfully complete an evasive maneuver
         self.evasive = False
 
-        # Did invoker fail to make contact or did opponent evade
+        # Did invoker fail to make contact or did target evade
         self.evaded = False
-        
-        # True if both players are human
-        self.pvp = None
     
-    def offset_opponent_hp(self, opponentHPOffset):
-        '''Modifies opponent creature's HP
+    def offset_target_hp(self, targetHPOffset):
+        '''Modifies target creature's HP
         
         Positive values add HP (heal),
         negative values remove HP (damage)'''
-        self.opponentHPDelta += opponentHPOffset
+        self.targetHPDelta += targetHPOffset
 
     def offset_invoker_hp(self, invokerHPOffset):
         '''Modifies action invoking creature's HP
@@ -62,67 +77,64 @@ class Action:
         negative values remove HP (damage)'''
         self.invokerHPDelta += invokerHPOffset
 
-    def damage_opponent(self, opponentHPLost):
+    def damage_target(self, targetHPLost):
         '''Takes positive value as argument
         and applies it as a negative hp offset
-        to opponent (damage)'''
-        self.opponentHPDelta -= opponentHPLost
+        to target (damage)'''
+        self.targetHPDelta -= targetHPLost
     
     def damage_invoker(self, invokerHPLost):
         '''Takes positive value as argument
         and applies it as a negative hp offset
         to invoker (damage)'''
         self.invokerHPDelta -= invokerHPLost
-
-    def run(self):
-        '''Process action logic'''
-
+    
     def get(self):
         '''Return hp deltas to be processed'''
         if self.evaded:
-            self.opponentHPDelta = 0
-        return (self.invokerHPDelta, self.opponentHPDelta)
+            self.targetHPDelta = 0
+        return (self.invokerHPDelta, self.targetHPDelta)
     
     def apply(self):
         self.get()
         self.invoker.hp += self.invokerHPDelta
-        self.opponent.hp += self.opponentHPDelta
+        self.target.hp += self.targetHPDelta
 
 
 class Strike(Action):
-    def __init__(self, atkr, dfndr):
-        super().__init__('Strike', atkr, dfndr)
+    def __init__(self, invoker, target):
+        super().__init__('Strike', invoker, target)
     
     def run(self):
         result = roll_dice(10)
         if result == 1:
-            print(f'UID {self.invoker.uid} missed UID {self.opponent.uid}')
+            print(f'UID {self.invoker.uid} missed UID {self.target.uid}')
             self.evaded = True
             return
         elif result in (2, 3):
             damage = trim_min(self.invoker.attack, 0)
-            print(f'UID {self.invoker.uid} hit UID {self.opponent.uid} unmitigated for {damage}')
-            self.damage_opponent(damage)
+            print(f'UID {self.invoker.uid} hit UID {self.target.uid} unmitigated for {damage}')
+            self.damage_target(damage)
         elif result in range(4, 9):
-            damage = trim_min(self.invoker.attack - self.opponent.defense, 0)
-            print(f'UID {self.invoker.uid} hit UID {self.opponent.uid} deflected for {damage}')
-            self.damage_opponent(damage)
+            damage = trim_min(self.invoker.attack - self.target.defense, 0)
+            print(f'UID {self.invoker.uid} hit UID {self.target.uid} deflected for {damage}')
+            self.damage_target(damage)
         elif result == 9:
-            damage = self.invoker.attack - self.opponent.defense
-            counter = self.opponent.attack - self.invoker.defense
-            self.damage_opponent(damage)
+            damage = self.invoker.attack - self.target.defense
+            counter = self.target.attack - self.invoker.defense
+            self.damage_target(damage)
             self.damage_invoker(counter)
-            print(f'UID {self.invoker.uid} struck UID {self.opponent.uid} for {damage}\nUID {self.opponent.uid} counterstruck UID {self.invoker.uid} for {counter}')
+            print(f'UID {self.invoker.uid} struck UID {self.target.uid} for {damage}...\nUID {self.target.uid} counterstruck UID {self.invoker.uid} for {counter}')
         elif result == 10:
-            damage = trim_min((self.invoker.attack * 2) - self.opponent.defense, 0)
-            print(f'UID {self.invoker.uid} critically hit UID {self.opponent.uid} for {damage}')
-            self.damage_opponent(damage)
-        print(f'\tUID {self.invoker.uid}\tHP Delta = {self.invokerHPDelta}\n\tUID {self.opponent.uid}\tHP Delta = {self.opponentHPDelta}')
+            damage = trim_min((self.invoker.attack * 2) - self.target.defense, 0)
+            print(f'UID {self.invoker.uid} critically hit UID {self.target.uid} for {damage}')
+            self.damage_target(damage)
+        print(f'\tUID {self.invoker.uid}\tHP Delta = {self.invokerHPDelta}\n\tUID {self.target.uid}\tHP Delta = {self.targetHPDelta}')
 
 
 class Meditate(Action):
-    def __init__(self, invoker, opponent):
-        super().__init__('Meditate', invoker, opponent)
+    def __init__(self, invoker, target):
+        super().__init__('Meditate', invoker, target)
     
     def run(self):
         result = roll_dice(10)
@@ -144,8 +156,8 @@ class Meditate(Action):
 
 
 class Brace(Action):
-    def __init__(self, invoker, opponent):
-        super().__init__('Brace', invoker, opponent)
+    def __init__(self, invoker, target):
+        super().__init__('Brace', invoker, target)
     
     def run(self):
         result = roll_dice(10)
@@ -167,20 +179,20 @@ class Brace(Action):
 
 
 class Dodge(Action):
-    def __init__(self, invoker, opponent):
-        super().__init__('Dodge', invoker, opponent)
+    def __init__(self, invoker, target):
+        super().__init__('Dodge', invoker, target)
     
     def run(self):
         result = roll_dice(10)
         if result in range(1, 7):
-            print(f'UID {self.invoker.uid} dodged unsuccessfully')
+            print(f'UID {self.invoker.uid} attempted to dodge unsuccessfully')
         else:
             print(f'UID {self.invoker.uid} dodged attack')
             self.evasive = True
     
 class InnerPeace(Action):
-    def __init__(self, invoker, opponent):
-        super().__init__('Inner Peace', invoker, opponent)
+    def __init__(self, invoker, target):
+        super().__init__('Inner Peace', invoker, target)
 
     def run(self):
         healAmount = round(self.invoker.hp * 0.5)
@@ -189,11 +201,9 @@ class InnerPeace(Action):
             self.invoker.hp = healAmount
 
 
-class Switch(Action):
-    '''Switch to specified invoker'''
+class Switch(ActionBase):
+    '''Switch from invoker to target as active creature'''
     
-    def __init__(self, switchingFrom, switchingTo, *args, **kwargs):
-        super().__init__(self, 'Switch', switchingFrom, None, *args, **kwargs)
-        self.switch = True
-        self.invoker = switchingFrom
-        self.switchingTo = switchingTo
+    def __init__(self, invoker, target):
+        super().__init__(self, 'Switch', invoker, target)
+

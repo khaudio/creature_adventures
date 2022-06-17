@@ -1,5 +1,6 @@
 from creature import *
 from player import *
+from action import *
 import multiprocessing
 import itertools
 
@@ -60,8 +61,32 @@ class Battle:
 
     def stage_action(self, action):
         '''Stage a single action in queue for later processing'''
-        action.pvp = self.pvp
         self.actionQueue.put(action)
+
+    def _update_queue_creatures(self, oldCreature, newCreature):
+        length = self.actionQueue.qsize()
+        for _ in range(length):
+            index = None
+            action = self.actionQueue.get()
+            for i, c in enumerate(action.creatures):
+                if c == oldCreature:
+                    index = i
+            action.creatures[index] = newCreature
+            self.actionQueue.put(action)
+        else:
+            print(f'Updated queue from {oldCreature} to {newCreature}')
+
+    def switch_creatuers(self, invoker, target):
+        index = None
+        for i, creature in self._participants:
+            if invoker == creature:
+                index = i
+        self._participants[index] = target
+
+    def switch_creatures(self, action):
+        if not isinstance(action, Switch):
+            raise TypeError('Must be Switch')
+        self.switch_creatuers(action.invoker, action.target)
 
     def process_single_action(self, action = None):
         '''Process a single action
@@ -71,16 +96,30 @@ class Battle:
         special actions, such as those provided by items.
         In normal pvp play, actions should be processed in pairs'''
         action = self.actionQueue.get() if action is None else action
+        action.pvp = self.pvp
+        if isinstance(action, Switch):
+            self.switch_creatures(action)
+            self._update_queue_creatures(action.invoker, action.target)
+            return
         action.run()
         action.apply()
-        self.match_participant(a.invoker).hp += a.invokerHPDelta
-        self.match_participant(a.opponent).hp += a.opponentHPDelta
+        self.match_participant(action.invoker).hp += action.invokerHPDelta
+        self.match_participant(action.target).hp += action.targetHPDelta
 
     def process_action_pair(self):
         '''Process actions in pairs so that combat happens at the same time'''
         if self.actionQueue.empty() or (self.actionQueue.qsize() % 2):
             raise ValueError('Queue size must be multiple of two and not empty')
         actions = [self.actionQueue.get() for _ in range(2)]
+        self.pvp = all(a.pvp for a in actions)
+        if isinstance(actions[0], Switch):
+            if actions[1].target == actions[0].invoker:
+                actions[1].target = actions[0].target
+        if isinstance(actions[1], Switch):
+            if not isinstance(actions[0], Switch):
+                self.process_single_action(actions[0])
+            self.process_single_action(actions[1])
+            return
         for a in actions:
             a.run()
         if actions[0].evasive:
@@ -90,7 +129,7 @@ class Battle:
         for a in actions:
             a.apply()
             self.match_participant(a.invoker).hp += a.invokerHPDelta
-            self.match_participant(a.opponent).hp += a.opponentHPDelta
+            self.match_participant(a.target).hp += a.targetHPDelta
 
     def run(self):
         '''Process all staged actions two at a time until empty'''
