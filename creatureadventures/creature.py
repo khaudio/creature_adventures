@@ -69,10 +69,18 @@ class Creature(CreatureBase):
             )
     
     @attack.setter
-    def attack(self, attrPoints):
-        if not isinstance(attrPoints, int):
+    def attack(self, value):
+        if not isinstance(value, int):
             raise TypeError('Must be int')
-        self.attackModifier = attrPoints
+        self.attackModifier = value - self.baseAttack
+
+    @property
+    def _permanentAttack(self):
+        return self.baseAttack + self.attackModifier
+    
+    @_permanentAttack.setter
+    def _permanentAttack(self, value):
+        self.attack = value
 
     @property
     def defense(self):
@@ -83,11 +91,19 @@ class Creature(CreatureBase):
             )
     
     @defense.setter
-    def defense(self, attrPoints):
-        if not isinstance(attrPoints, int):
+    def defense(self, value):
+        if not isinstance(value, int):
             raise TypeError('Must be int')
-        self.defenseModifier = attrPoints
+        self.defenseModifier = value - self.baseDefense
     
+    @property
+    def _permanentDefense(self):
+        return self.baseDefense + self.defenseModifier
+    
+    @_permanentDefense.setter
+    def _permanentDefense(self, value):
+        self.defense = value
+
     @property
     def maxHP(self):
         return (
@@ -134,5 +150,3 @@ class Creature(CreatureBase):
             self.hp = self.maxHP
         else:
             self.hp += additionalHP
-
-

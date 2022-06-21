@@ -5,8 +5,8 @@ class TieredObjectBase:
     tierNames = ('Common', 'Uncommon', 'Rare', 'Epic', 'Legendary')
 
     # Relative ratios of how many objects of each tier should be created.
-    # No Epic or Legendary objects by default
-    tieredVolumeRatios = {0: 0.58, 1: 0.28, 2: 0.14, 3: 0.00, 4: 0.00}
+    # No Legendary objects by default
+    tieredVolumeRatios = {0: 0.56, 1: 0.26, 2: 0.12, 3: 0.06, 4: 0.00}
 
     # Relative ratios of stat points available to items in each tier
     tierQualityThresholds = {
@@ -20,3 +20,6 @@ class TieredObjectBase:
     def __init__(self, *args, **kwargs):
         self.uid = None
         self.tier = None
+
+        if sum(self.tieredVolumeRatios.values()) != 1.0:
+            raise ValueError('Sum must equal 1.0')

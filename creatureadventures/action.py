@@ -19,9 +19,9 @@ def trim_max(value, maximum):
 class ActionBase:
     '''Base class for Actions'''
 
-    def __init__(self, actionName, invoker, target = None):
-        self.name = actionName
-        
+    name = ''
+
+    def __init__(self, invoker, target = None):
         # Creature invoking the action
         self.invoker = invoker
 
@@ -36,9 +36,14 @@ class ActionBase:
 
     def get(self):
         '''Return HP deltas to be processed'''
-    
-    def apply(self):
-        '''Reconcile HP deltas'''
+
+
+class ModifierAction:
+    def __init__(self):
+        self.modifier = None
+
+    def get_modifier(self):
+        return self.modifier
 
 
 class Action(ActionBase):
@@ -48,9 +53,11 @@ class Action(ActionBase):
     
     Some actions may be used outside of battle
     '''
+
+    name = ''
     
-    def __init__(self, actionName, invoker, target = None):
-        super().__init__(actionName, invoker, target)
+    def __init__(self, invoker, target = None):
+        super().__init__(invoker, target)
 
         # HP gained or lost for each creature.
         # Can be a positive or negative integer
@@ -94,16 +101,13 @@ class Action(ActionBase):
         if self.evaded:
             self.targetHPDelta = 0
         return (self.invokerHPDelta, self.targetHPDelta)
-    
-    def apply(self):
-        self.get()
-        self.invoker.hp += self.invokerHPDelta
-        self.target.hp += self.targetHPDelta
 
 
 class Strike(Action):
+    name = 'Strike'
+
     def __init__(self, invoker, target):
-        super().__init__('Strike', invoker, target)
+        super().__init__(invoker, target)
     
     def run(self):
         result = roll_dice(10)
@@ -132,55 +136,65 @@ class Strike(Action):
         print(f'\tUID {self.invoker.uid}\tHP Delta = {self.invokerHPDelta}\n\tUID {self.target.uid}\tHP Delta = {self.targetHPDelta}')
 
 
-class Meditate(Action):
+class Meditate(Action, ModifierAction):
+    name = 'Meditate'
+
     def __init__(self, invoker, target):
-        super().__init__('Meditate', invoker, target)
+        super().__init__(invoker, target)
+        ModifierAction.__init__(self)
     
     def run(self):
         result = roll_dice(10)
         if result == 1:
             print(f'No change to UID {self.invoker.uid} attack')
             return
-        attackBoost = TimedModifier()
-        attackBoost.numTurns = 1
+        self.modifier = TimedModifier()
+        # Set numTurns to 2 so that attack is raised on next turn.
+        # First turn is used by performing this action itself.
+        self.modifier.numTurns = 2
         if result in range(2, 7):
-            print(f'UID {self.invoker.uid} attack raised by 30%')
-            attackBoost.attackModifier = round(self.invoker.attack * 0.3)
+            self.modifier.attackModifier = round(self.invoker._permanentAttack * 0.3)
+            print(f'UID {self.invoker.uid} attack raised by 30% to {self.invoker.attack + self.modifier.attackModifier}')
         elif result in range(7, 10):
-            print(f'UID {self.invoker.uid} attack raised by 50%')
-            attackBoost.attackModifier = round(self.invoker.attack * 0.5)
+            self.modifier.attackModifier = round(self.invoker._permanentAttack * 0.5)
+            print(f'UID {self.invoker.uid} attack raised by 50% to {self.invoker.attack + self.modifier.attackModifier}')
         elif result == 10:
-            print(f'UID {self.invoker.uid} attack raised by 100%')
-            attackBoost.attackModifier = self.invoker.attack * 2
-        self.invoker.add_modifier(attackBoost)
+            self.modifier.attackModifier = self.invoker._permanentAttack
+            print(f'UID {self.invoker.uid} attack raised by 100% to {self.invoker.attack + self.modifier.attackModifier}')
 
 
-class Brace(Action):
+class Brace(Action, ModifierAction):
+    name = 'Brace'
+
     def __init__(self, invoker, target):
-        super().__init__('Brace', invoker, target)
+        super().__init__(invoker, target)
+        ModifierAction.__init__(self)
     
     def run(self):
         result = roll_dice(10)
         if result == 1:
             print(f'No change to UID {self.invoker.uid} defense')
             return
-        defenseBoost = TimedModifier()
-        defenseBoost.numTurns = 1
+        self.modifier = TimedModifier()
+        # Set numTurns to 2 so that defense is raised on next turn.
+        # First turn is used by performing this action itself.
+        self.modifier.numTurns = 2
         if result in range(2, 7):
-            print(f'UID {self.invoker.uid} defense raised by 30%')
-            defenseBoost.defenseModifier = round(self.invoker.defense * 0.3)
+            self.modifier.defenseModifier = round(self.invoker._permanentDefense * 0.5)
+            print(f'UID {self.invoker.uid} defense raised by 50% to {self.invoker.defense + self.modifier.defenseModifier}')
         elif result in range(7, 10):
-            print(f'UID {self.invoker.uid} defense raised by 50%')
-            defenseBoost.defenseModifier = round(self.invoker.defense * 0.5)
+            self.modifier.defenseModifier = self.invoker._permanentDefense
+            print(f'UID {self.invoker.uid} defense raised by 100% to {self.invoker.defense + self.modifier.defenseModifier}')
         elif result == 10:
-            print(f'UID {self.invoker.uid} defense raised by 100%')
-            defenseBoost.defenseModifier = self.invoker.defense
-        self.invoker.add_modifier(defenseBoost)
+            self.modifier.defenseModifier = self.invoker._permanentDefense * 2
+            print(f'UID {self.invoker.uid} defense raised by 200% to {self.invoker.defense + self.modifier.defenseModifier}')
 
 
 class Dodge(Action):
+    name = 'Dodge'
+
     def __init__(self, invoker, target):
-        super().__init__('Dodge', invoker, target)
+        super().__init__(invoker, target)
     
     def run(self):
         result = roll_dice(10)
@@ -189,21 +203,24 @@ class Dodge(Action):
         else:
             print(f'UID {self.invoker.uid} dodged attack')
             self.evasive = True
-    
+
+
 class InnerPeace(Action):
+    name = 'Inner Peace'
+
     def __init__(self, invoker, target):
-        super().__init__('Inner Peace', invoker, target)
+        super().__init__(invoker, target)
 
     def run(self):
-        healAmount = round(self.invoker.hp * 0.5)
-        print(f'UID {self.invoker.uid} cast Inner Peace and heals for {healAmount}')
-        if self.invoker.hp > 0:
-            self.invoker.hp = healAmount
+        self.invokerHPDelta = round(self.invoker.hp * 0.5)
+        print(f'UID {self.invoker.uid} cast Inner Peace and heals for {self.invokerHPDelta}')
 
 
 class Switch(ActionBase):
     '''Switch from invoker to target as active creature'''
+
+    name = 'Switch'
     
     def __init__(self, invoker, target):
-        super().__init__(self, 'Switch', invoker, target)
+        super().__init__(invoker, target)
 

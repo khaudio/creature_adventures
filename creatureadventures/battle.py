@@ -61,6 +61,7 @@ class Battle:
 
     def stage_action(self, action):
         '''Stage a single action in queue for later processing'''
+        action.pvp = self.pvp
         self.actionQueue.put(action)
 
     def _update_queue_creatures(self, oldCreature, newCreature):
@@ -76,7 +77,7 @@ class Battle:
         else:
             print(f'Updated queue from {oldCreature} to {newCreature}')
 
-    def switch_creatuers(self, invoker, target):
+    def switch_creatures(self, invoker, target):
         index = None
         for i, creature in self._participants:
             if invoker == creature:
@@ -95,23 +96,26 @@ class Battle:
         This is useful for single player as well as
         special actions, such as those provided by items.
         In normal pvp play, actions should be processed in pairs'''
+        print('Processing single action...')
         action = self.actionQueue.get() if action is None else action
-        action.pvp = self.pvp
+        invoker =  self.match_participant(action.invoker)
         if isinstance(action, Switch):
             self.switch_creatures(action)
             self._update_queue_creatures(action.invoker, action.target)
             return
         action.run()
-        action.apply()
-        self.match_participant(action.invoker).hp += action.invokerHPDelta
-        self.match_participant(action.target).hp += action.targetHPDelta
+        if isinstance(action, ModifierAction):
+            invoker.add_modifier(action.get_modifier())
+        else:
+            self.match_participant(action.invoker).hp += action.invokerHPDelta
+            self.match_participant(action.target).hp += action.targetHPDelta
 
     def process_action_pair(self):
         '''Process actions in pairs so that combat happens at the same time'''
+        print('Processing action pair...')
         if self.actionQueue.empty() or (self.actionQueue.qsize() % 2):
             raise ValueError('Queue size must be multiple of two and not empty')
         actions = [self.actionQueue.get() for _ in range(2)]
-        self.pvp = all(a.pvp for a in actions)
         if isinstance(actions[0], Switch):
             if actions[1].target == actions[0].invoker:
                 actions[1].target = actions[0].target
@@ -121,13 +125,18 @@ class Battle:
             self.process_single_action(actions[1])
             return
         for a in actions:
-            a.run()
+            if isinstance(a, ModifierAction):
+                a.run()
+                invoker = self.match_participant(a.invoker)
+                invoker.add_modifier(a.get_modifier())
+        for a in actions:
+            if not isinstance(a, ModifierAction):
+                a.run()
         if actions[0].evasive:
             actions[1].evaded = True
         if actions[1].evasive:
             actions[0].evaded = True
         for a in actions:
-            a.apply()
             self.match_participant(a.invoker).hp += a.invokerHPDelta
             self.match_participant(a.target).hp += a.targetHPDelta
 
@@ -141,7 +150,9 @@ class Battle:
             print(
                     f'\tUID {self._participants[0].uid}'
                     + f'\tHP = {self._participants[0].hp} / {self._participants[0].maxHP}'
-                    + f'\n\tUID {self._participants[1].uid}'
+                )
+            print(
+                    f'\tUID {self._participants[1].uid}'
                     + f'\tHP = {self._participants[1].hp} / {self._participants[1].maxHP}'
                 )
     

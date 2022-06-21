@@ -101,19 +101,19 @@ Combat actions include:
         - 50% chance for a deflected hit (Attacker's `Attack` power minus defender's `Defense`)
         - 10% chance to receive a counterstrike (Both creatures land deflected strikes)
         - 10% chance for a critical hit (Double `Attack` power minus defender's `Defense`)
-    - `Meditate` (Roll to increase `Attack` for one turn)
+    - `Meditate` (Roll to increase `Attack` for current and next turn)
         - 10% chance for no change to `Attack`
         - 50% chance to raise `Attack` by 30%
         - 30% chance to raise `Attack` by 50%
         - 10% chance to raise `Attack` by 100%
 
 - **Defend**
-    - `Brace` (Roll to boost `Defense` for one turn)
+    - `Brace` (Roll to boost `Defense` for current and next turn)
         - 10% chance for no change to `Defense`
-        - 50% chance to raise `Defense` by 30%
-        - 30% chance to raise `Defense` by 50%
-        - 10% chance to raise `Defense` by 100%
-    - `Dodge` (Roll to dodge attack entirely)
+        - 50% chance to raise `Defense` by 50%
+        - 30% chance to raise `Defense` by 100%
+        - 10% chance to raise `Defense` by 200%
+    - `Dodge` (Roll to dodge current opponent attack entirely)
         - 60% chance dodge is unsuccessful
         - 40% chance attack is dodged (No damage done)
     - `Inner Peace` (Heal a pre-assigned creature for 50% HP if the player has the `Sigil of Wisdom`).  `Inner Peace` may not be used to revive a creature while in battle.
@@ -135,7 +135,7 @@ Single player combat differs somewhat from PvP.  Offensive moves are still avail
         - 40% chance to receive a counterstrike (NPC `Attack` power damage done to player)
         - 10% chance for a critical hit (Double `Attack` power)
 
-    - `Meditate` (Roll to increase `Attack` for one turn)
+    - `Meditate` (Roll to increase `Attack` for current and next turn)
         - 50% chance to receive an interrupting hit from opponent
         - 30% chance to raise `Attack` by 50%
         - 20% chance to raise `Attack` by 100%
