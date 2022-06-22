@@ -5,7 +5,7 @@ from dice import *
 class CoreBase:
     # Default max stat points available for all creature creation
     maxPossibleStatPoints = 30
-    globalActions = [Strike, Meditate, Brace, Dodge, Switch]
+    globalActions = [Strike, Meditate, Brace, Dodge, Switch, Forfeit, Escape]
     
     def __init__(self):
         self.players = []
@@ -62,48 +62,3 @@ class CoreBase:
         print('Gladiator created')
         for c in self.gladiator.creatures:
             print(c)
-
-    def prompt_battle_action(self, battle, invoker, target):
-        print(f'Choose action for creature {invoker.uid}...\nChoices:\n')
-        choices = dict()
-        for i, action in enumerate(self.globalActions):
-            choices[i] = action(invoker, target)
-        for action in invoker.availableActions:
-            choices[len(choices)] = action(invoker, target)
-        for i, action in choices.items():
-            print(f'\t{i}:\t{action.name}')
-        print('')
-        if not choices:
-            raise IndexError('No choices available!')
-        try:
-            choiceNumber = int(input())
-        except:
-            raise TypeError('Must be int')
-        else:
-            if not choiceNumber < len(choices):
-                raise IndexError('User choice is out of range')
-            return choices[choiceNumber]
-    
-    def run_battle(self, attackingCreature, defendingCreature, pvp):
-        print(f'Creating {"pvp" if pvp else "pve"} battle...')
-        battle = Battle(attackingCreature, defendingCreature, pvp)
-        while battle.active():
-            print('Cycling battle turn...')
-            self.tick_modifiers()
-            for creature in battle._participants:
-                print(f'UID {creature.uid} has {len(creature.modifiers)} active modifiers')
-            c1, c2 = battle._participants
-            action = self.prompt_battle_action(battle, c1, c2)
-            battle.stage_action(action)
-            if battle.pvp:
-                counterAction = self.prompt_battle_action(battle, c2, c1)
-                battle.stage_action(counterAction)
-            battle.run()
-            # yield
-        else:
-            print('Battle is over')
-            victor = battle.get()
-            if victor:
-                print(f'UID {victor.uid} wins the battle!')
-            else:
-                print(f'Battle is a tie!')

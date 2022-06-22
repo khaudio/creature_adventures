@@ -1,54 +1,19 @@
 from creature import *
 from player import *
 from action import *
-import multiprocessing
+from queue import Queue
 import itertools
 
 
 class Battle:
     def __init__(self, attackingCreature, defendingCreature, pvp):
         self._participants = [attackingCreature, defendingCreature]
-        # self._offensiveIndex = 0
-        # self._defensiveIndex = 1
-        # self.actionQueue = collections.deque()
-        self.actionQueue = multiprocessing.Queue()
+        self.actionQueue = Queue()
+
         # True if both players are human
         self.pvp = pvp
+        
         print(f'UID {attackingCreature.uid} begins a battle with UID {defendingCreature.uid}')
-
-    # @property
-    # def attacker(self):
-    #     return self._participants[self._offensiveIndex]
-    
-    # @attacker.setter
-    # def attacker(self, participant):
-    #     for i, creature in enumerate(self._participants):
-    #         if creature == participant:
-    #             self._offensiveIndex = i
-    #             return
-    #     else:
-    #         raise ValueError('Creature unavailable')
-    
-    # @property
-    # def defender(self):
-    #     return self._participants[self._defensiveIndex]
-    
-    # @defender.setter
-    # def defender(self, participant):
-    #     for i, creature in enumerate(self._participants):
-    #         if creature == participant:
-    #             self._defensiveIndex = i
-    #             return
-    #     else:
-    #         raise ValueError('Creature unavailable')
-    
-    # def flip_turn(self):
-    #     if not self._offensiveIndex:
-    #         self._offensiveIndex = 1
-    #         self._defensiveIndex = 0
-    #     else:
-    #         self._offensiveIndex = 0
-    #         self._defensiveIndex = 1
 
     def match_participant(self, creature):
         for c in self._participants:
@@ -107,8 +72,9 @@ class Battle:
         if isinstance(action, ModifierAction):
             invoker.add_modifier(action.get_modifier())
         else:
-            self.match_participant(action.invoker).hp += action.invokerHPDelta
-            self.match_participant(action.target).hp += action.targetHPDelta
+            results = action.get()
+            self.match_participant(action.invoker).hp += results[0]
+            self.match_participant(action.target).hp += results[1]
 
     def process_action_pair(self):
         '''Process actions in pairs so that combat happens at the same time'''
@@ -137,8 +103,9 @@ class Battle:
         if actions[1].evasive:
             actions[0].evaded = True
         for a in actions:
-            self.match_participant(a.invoker).hp += a.invokerHPDelta
-            self.match_participant(a.target).hp += a.targetHPDelta
+            results = a.get()
+            self.match_participant(a.invoker).hp += results[0]
+            self.match_participant(a.target).hp += results[1]
 
     def run(self):
         '''Process all staged actions two at a time until empty'''

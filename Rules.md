@@ -146,7 +146,7 @@ Single player combat differs somewhat from PvP.  Offensive moves are still avail
 - **Switch**
     - Switch to another creature
 
-- **Run**
+- **Escape**
     - Roll to escape a wild creature encounter.
         - 50% chance the player escapes
         - 50% chance the player is trapped and must proceed to the next turn of combat

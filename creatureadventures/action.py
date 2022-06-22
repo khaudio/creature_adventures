@@ -224,3 +224,19 @@ class Switch(ActionBase):
     def __init__(self, invoker, target):
         super().__init__(invoker, target)
 
+
+class Forfeit(ActionBase):
+
+    name = 'Forfeit'
+
+    def __init__(self, invoker, target):
+        super().__init__(invoker, target)
+
+
+class Escape(ActionBase):
+
+    name = 'Escape'
+
+    def __init__(self, invoker, target):
+        super().__init__(invoker, target)
+
