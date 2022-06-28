@@ -32,6 +32,18 @@ class CreatureBase(TieredObjectBase):
                 f'Base Defense:\t{self.baseDefense}',
                 f'Base HP:\t\t{self.baseMaxHP}'
             ))
+    
+    @property
+    def tierName(self):
+        return self.tierNames[self.tier]
+    
+    @tierName.setter
+    def tierName(self, value):
+        for i, name in enumerate(self.tierNames):
+            if value == name:
+                self.tier = i
+                return
+        raise IndexError(f'{name} not found in available tier names')
 
 
 class Creature(CreatureBase):

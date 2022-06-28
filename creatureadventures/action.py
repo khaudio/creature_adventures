@@ -1,5 +1,6 @@
-from creature import TimedModifier
 from dice import *
+from creature import *
+from tieredobjectbase import *
 
 
 def trim_min(value, minimum):
@@ -20,6 +21,7 @@ class ActionBase:
     '''Base class for Actions'''
 
     name = ''
+    description = ''
 
     def __init__(self, invoker, target = None):
         # Creature invoking the action
@@ -103,8 +105,15 @@ class Action(ActionBase):
         return (self.invokerHPDelta, self.targetHPDelta)
 
 
+class TieredAction(Action, TieredObjectBase):
+    def __init__(self, invoker, target):
+        super().__init__(invoker, target)
+        TieredObjectBase.__init__(self)
+
+
 class Strike(Action):
     name = 'Strike'
+    description = 'Attack an enemy for damage'
 
     def __init__(self, invoker, target):
         super().__init__(invoker, target)
@@ -138,6 +147,7 @@ class Strike(Action):
 
 class Meditate(Action, ModifierAction):
     name = 'Meditate'
+    description = 'Roll to increase attack'
 
     def __init__(self, invoker, target):
         super().__init__(invoker, target)
@@ -165,6 +175,7 @@ class Meditate(Action, ModifierAction):
 
 class Brace(Action, ModifierAction):
     name = 'Brace'
+    description = 'Roll to increase defense'
 
     def __init__(self, invoker, target):
         super().__init__(invoker, target)
@@ -192,6 +203,7 @@ class Brace(Action, ModifierAction):
 
 class Dodge(Action):
     name = 'Dodge'
+    description = 'Roll to evade incoming attack'
 
     def __init__(self, invoker, target):
         super().__init__(invoker, target)
@@ -207,6 +219,7 @@ class Dodge(Action):
 
 class InnerPeace(Action):
     name = 'Inner Peace'
+    description = 'Heal for half max HP'
 
     def __init__(self, invoker, target):
         super().__init__(invoker, target)
@@ -220,6 +233,7 @@ class Switch(ActionBase):
     '''Switch from invoker to target as active creature'''
 
     name = 'Switch'
+    description = 'Switch to another creature'
     
     def __init__(self, invoker, target):
         super().__init__(invoker, target)
@@ -228,6 +242,7 @@ class Switch(ActionBase):
 class Forfeit(ActionBase):
 
     name = 'Forfeit'
+    description = 'Concede defeat and end the battle'
 
     def __init__(self, invoker, target):
         super().__init__(invoker, target)
@@ -236,6 +251,7 @@ class Forfeit(ActionBase):
 class Escape(ActionBase):
 
     name = 'Escape'
+    description = 'Run from battle'
 
     def __init__(self, invoker, target):
         super().__init__(invoker, target)

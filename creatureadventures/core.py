@@ -7,7 +7,7 @@ class CoreBase:
     maxPossibleStatPoints = 30
     globalActions = [Strike, Meditate, Brace, Dodge, Switch, Forfeit, Escape]
     
-    def __init__(self):
+    def __init__(self, shuffle=True):
         self.players = []
         self.warlords = []
         self.gladiator = None
@@ -15,7 +15,7 @@ class CoreBase:
         self.creatureDeck = create_creature_deck(
                 deckSize,
                 self.maxPossibleStatPoints,
-                shuffle = True
+                shuffle = shuffle
             )
         self._uidIndex = deckSize
 

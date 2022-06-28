@@ -4,6 +4,7 @@ from battle import *
 from dice import *
 from core import *
 from cli import *
+from pdfcards import *
 
 
 def run_battle(core, attackingCreature, defendingCreature, pvp):
@@ -33,8 +34,7 @@ def run_battle(core, attackingCreature, defendingCreature, pvp):
             print(f'Battle is a tie!')
 
 
-def demo_test():
-    core = CoreBase()
+def demo_test(core):
     p1, p2 = Player(), Player()
     core.players = [p1, p2]
 
@@ -62,9 +62,18 @@ def demo_test():
     print(c1, '\n', c2, '\n')
 
 
+def print_cards_to_pdf(core):
+    write_creature_pdf_from_deck(core.creatureDeck)
+
+
 def main():
     print('Starting Adventure...')
-    demo_test()
+    
+    core = CoreBase(shuffle=False)
+    
+    print_cards_to_pdf(core)
+    
+    demo_test(core)
 
 
 main()

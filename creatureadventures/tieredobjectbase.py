@@ -1,6 +1,5 @@
 
 
-
 class TieredObjectBase:
     tierNames = ('Common', 'Uncommon', 'Rare', 'Epic', 'Legendary')
 
@@ -16,10 +15,11 @@ class TieredObjectBase:
             3: [0.70, 0.80],
             4: [0.80, 1.00]
         }
+    
+    if sum(tieredVolumeRatios.values()) != 1.0:
+        raise ValueError('Sum must equal 1.0')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         self.uid = None
         self.tier = None
 
-        if sum(self.tieredVolumeRatios.values()) != 1.0:
-            raise ValueError('Sum must equal 1.0')
