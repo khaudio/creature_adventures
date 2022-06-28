@@ -5,7 +5,18 @@ from dice import *
 class CoreBase:
     # Default max stat points available for all creature creation
     maxPossibleStatPoints = 30
-    globalActions = [Strike, Meditate, Brace, Dodge, Switch, Forfeit, Escape]
+    globalActions = [
+            Strike,
+            Meditate,
+            Brace,
+            Dodge,
+            Switch,
+            Forfeit,
+            Escape
+        ]
+    _allActions = [
+            *globalActions
+        ]
     
     def __init__(self, shuffle=True):
         self.players = []

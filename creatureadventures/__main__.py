@@ -5,6 +5,9 @@ from dice import *
 from core import *
 from cli import *
 from pdfcards import *
+from saver import *
+from item import *
+import pathlib
 
 
 def run_battle(core, attackingCreature, defendingCreature, pvp):
@@ -14,7 +17,10 @@ def run_battle(core, attackingCreature, defendingCreature, pvp):
         print('Cycling battle turn...')
         core.tick_modifiers()
         for creature in battle._participants:
-            print(f'UID {creature.uid} has {len(creature.modifiers)} active modifiers')
+            print(
+                    f'UID {creature.uid} has'
+                    + f'{len(creature.modifiers)} active modifiers'
+                )
         c1, c2 = battle._participants
         selection = prompt_for_action(core, c1)
         action = selection(c1, c2)
@@ -62,20 +68,49 @@ def demo_test(core):
     print(c1, '\n', c2, '\n')
 
 
-def print_cards_to_pdf(core):
-    write_creature_pdf_from_deck(core.creatureDeck)
+def load_saved_creatures(path='.'):
+    cwd = pathlib.Path(path)
+    build = None
+    for item in cwd.iterdir():
+        if item.name == 'creature_deck.json':
+            return load_creature_deck_from_json(item.as_posix())
+        elif item.name == 'build' and item.is_dir():
+            build = item
+    else:
+        try:
+            return load_saved_creatures(build.as_posix())
+        except:
+            return
+
+
+def get_deck(core, override=False):
+    # Attempt to load a saved creature deck
+    deck = None
+    if not override:
+        try:
+            deck = load_saved_creatures('build')
+        except:
+            override=True
+    if override:
+        # Create deck if a saved one could not be loaded
+        deck = core.creatureDeck
+        save_creature_deck_as_json(deck, './build/creature_deck.json')
+        write_creature_pdf_from_deck(
+                deck,
+                filename='./build/creature_cards.pdf',
+                images='./images'
+            )
+    
+    return deck
 
 
 def main():
     print('Starting Adventure...')
     
     core = CoreBase(shuffle=False)
-    
-    print_cards_to_pdf(core)
-    
+    core.creatureDeck = get_deck(core, override=False)
+
     demo_test(core)
 
 
 main()
-
-

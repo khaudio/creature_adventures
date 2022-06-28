@@ -1,27 +1,30 @@
 import fpdf
+import pathlib
 from action import *
 
 
-def write_creature_pdf_from_deck(deck, filename='../build/creature_cards.pdf'):
+def write_item_pdf(itemDeck):
+    pass
+
+
+def write_creature_pdf_from_deck(deck, filename, images):
     pdf = fpdf.FPDF(orientation='P', unit='in', format=(2.25, 3.5))
     pdf.set_title('Creature Adventures Creature Deck')
     pdf.set_margins(*(0.15 for _ in range(3)))
     pdf.set_auto_page_break(False, 0.15)
     pdf.set_font('Courier', size=11)
-
+    design = None
+    for item in pathlib.Path(images).iterdir():
+        if 'creature_card_design' in item.name:
+            design = item.as_posix()
+    
     for card in deck:
         pdf.add_page()
-        pdf.image(
-                '../images/creature_card_design.jpg',
-                x=0.0,
-                y=0.0,
-                w=2.25,
-                h=3.5
-            )
+        pdf.image(design, x=0.0, y=0.0, w=2.25, h=3.5)
 
         # Print creature name at top
         pdf.set_font('', size=11, style='B')
-        name =  f'Creature UID {card.uid}'
+        name =  f'Creature'
         pdf.set_xy(0.15, 0.15)
         pdf.write(0.25, name)
 
@@ -41,6 +44,11 @@ def write_creature_pdf_from_deck(deck, filename='../build/creature_cards.pdf'):
         stats = f'{card.attack} / {card.defense}'
         pdf.set_xy(2.0 - pdf.get_string_width(stats), 3.0)
         pdf.write(0.5, stats)
+
+        # Print creature UID at bottom left
+        pdf.set_font('', size=6, style='')
+        pdf.set_xy(0.15, 3.0)
+        pdf.write(0.5, f'UID #{card.uid}')
 
         # Print special action in body under creature image
         pdf.set_xy(0.15, 2.22)

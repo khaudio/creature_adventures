@@ -18,8 +18,8 @@ class TimedModifier:
 
 
 class CreatureBase(TieredObjectBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.baseAttack = 0
         self.baseDefense = 0
         self.baseMaxHP = 1
@@ -47,8 +47,8 @@ class CreatureBase(TieredObjectBase):
 
 
 class Creature(CreatureBase):
-    def __init__(self, *args, player = None, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, player = None):
+        super().__init__()
         self.owner = player
         self.attackModifier = 0
         self.defenseModifier = 0

@@ -8,7 +8,7 @@ class Deck(list):
         super().__init__(*args, **kwargs)
     
     def __str__(self, *args, **kwargs):
-        return '\n\n'.join(i._stat_str() for i in self)
+        return '\n\n'.join(i.__str__() for i in self)
 
     @staticmethod
     def _sequence_uids(iterable):
