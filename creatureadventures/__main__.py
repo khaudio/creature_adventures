@@ -18,22 +18,53 @@ def run_battle(core, attackingCreature, defendingCreature, pvp):
         core.tick_modifiers()
         for creature in battle._participants:
             print(
-                    f'UID {creature.uid} has'
-                    + f'{len(creature.modifiers)} active modifiers'
+                    f'{creature.nickname} has'
+                    + f' {len(creature.modifiers)} active modifiers'
                 )
         c1, c2 = battle._participants
-        selection = prompt_for_action(core, c1)
-        action = selection(c1, c2)
+
+        selection = prompt_for_action(core, c1.owner, c1)
+        
+        if isinstance(selection, Item):
+            if isinstance(selection, Poison):
+                core.use_item(c1.owner, selection, itemTarget=c2)
+            elif isinstance(selection, Net):
+                raise ValueError('Net does nothing for pvp!')
+            else:
+                core.use_item(
+                        c1.owner,
+                        selection,
+                        itemTarget=prompt_for_target(core, c1.owner)
+                    )
+            action = Pass(c1, c2)
+            
+        else:
+            action = selection(c1, c2)
         battle.stage_action(action)
         if battle.pvp:
-            counterSelection = prompt_for_action(core, c2)
-            counterAction = counterSelection(c2, c1)
+            counterSelection = prompt_for_action(core, c2.owner, c2)
+            
+            if isinstance(counterSelection, Item):
+                if isinstance(counterSelection, Poison):
+                    core.use_item(c2.owner, counterSelection, itemTarget=c1)
+                elif isinstance(counterSelection, Net):
+                    raise ValueError('Net does nothing for pvp!')
+                else:
+                    core.use_item(
+                            c2.owner,
+                            counterSelection,
+                            itemTarget=prompt_for_target(core, c2.owner)
+                        )
+                counterAction = Pass(c2, c1)
+            else:
+                counterAction = counterSelection(c2, c1)
             battle.stage_action(counterAction)
         battle.run()
         yield
     else:
         print('Battle is over')
         victor = battle.get()
+        core.remove_combat_modifiers()
         if victor:
             print(f'UID {victor.uid} wins the battle!')
         else:
@@ -41,21 +72,26 @@ def run_battle(core, attackingCreature, defendingCreature, pvp):
 
 
 def demo_test(core):
-    p1, p2 = Player(), Player()
-    core.players = [p1, p2]
+    p1, p2 = (core.create_player() for _ in range(2))
 
     for p in core.players:
-        card = core.draw()
+        card = core.draw_creature()
         while not card.tier == 3:
-            card = core.draw()
+            card = core.draw_creature()
         card.owner = p
         p.creatures.append(card)
-        print(p.creatures[0])
+        for _ in range(10):
+            p.items.append(core.draw_item())
+
+    c1, c2 = p1.activeCreature, p2.activeCreature
+    c1.name, c2.name = 'Bro', 'Dude'
+
+    print(c1)
+    print('\nVS\n')
+    print(c2)
 
     print('\n')
     input('press Enter to battle...')
-
-    c1, c2 = p1.creatures[0], p2.creatures[0]
 
     b = run_battle(core, c1, c2, pvp = True)
 
@@ -65,7 +101,8 @@ def demo_test(core):
         except StopIteration:
             break
 
-    print(c1, '\n', c2, '\n')
+    print(c1, '\n')
+    print(c2, '\n')
 
 
 def load_saved_creatures(path='.'):
@@ -105,9 +142,9 @@ def get_deck(core, override=False):
 
 
 def main():
-    print('Starting Adventure...')
+    print('Starting Adventure...\n')
     
-    core = CoreBase(shuffle=False)
+    core = CoreBase(shuffle=True)
     core.creatureDeck = get_deck(core, override=False)
 
     demo_test(core)

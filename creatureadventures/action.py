@@ -1,6 +1,7 @@
 from dice import *
 from creature import *
 from tieredobjectbase import *
+from item import *
 
 
 def trim_min(value, minimum):
@@ -111,6 +112,25 @@ class TieredAction(Action, TieredObjectBase):
         TieredObjectBase.__init__(self)
 
 
+class Pass(Action):
+    name = 'Pass'
+    description = 'Forego action'
+
+    def __init__(self, invoker, target):
+        super().__init__(invoker, target)
+
+    def run(self):
+        pass
+
+
+class Catch(Action):
+    name = 'Catch'
+    description = 'Attempt to catch a wild creature'
+
+    def run(self):
+        pass
+
+
 class Strike(Action):
     name = 'Strike'
     description = 'Attack an enemy for damage'
@@ -158,10 +178,9 @@ class Meditate(Action, ModifierAction):
         if result == 1:
             print(f'No change to UID {self.invoker.uid} attack')
             return
-        self.modifier = TimedModifier()
         # Set numTurns to 2 so that attack is raised on next turn.
         # First turn is used by performing this action itself.
-        self.modifier.numTurns = 2
+        self.modifier = CreatureModifier(numTurns=2)
         if result in range(2, 7):
             self.modifier.attackModifier = round(self.invoker._permanentAttack * 0.3)
             print(f'UID {self.invoker.uid} attack raised by 30% to {self.invoker.attack + self.modifier.attackModifier}')
@@ -186,10 +205,9 @@ class Brace(Action, ModifierAction):
         if result == 1:
             print(f'No change to UID {self.invoker.uid} defense')
             return
-        self.modifier = TimedModifier()
         # Set numTurns to 2 so that defense is raised on next turn.
         # First turn is used by performing this action itself.
-        self.modifier.numTurns = 2
+        self.modifier = CreatureModifier(numTurns=2)
         if result in range(2, 7):
             self.modifier.defenseModifier = round(self.invoker._permanentDefense * 0.5)
             print(f'UID {self.invoker.uid} defense raised by 50% to {self.invoker.defense + self.modifier.defenseModifier}')

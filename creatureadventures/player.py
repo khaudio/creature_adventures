@@ -3,8 +3,9 @@ import collections
 
 
 class PlayerBase:
-    def __init__(self, *args, **kwargs):
-        self._uid = None
+    def __init__(self, uid, name = None):
+        self.uid = uid
+        self.name = name
         self.level = 1
         self.creatures = collections.deque(maxlen=3)
         self._activeCreatureIndex = 0
@@ -38,20 +39,34 @@ class PlayerBase:
 
 
 class Player(PlayerBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, uid, name = None):
+        super().__init__(uid, name)
         self.human = True
+        self._catchChance = None
+        self._maxCatchChance = None
+
+    @property
+    def catchChance(self):
+        return self._catchChance
+    
+    @catchChance.setter
+    def catchChance(self, value):
+        if not value:
+            raise ValueError('Value cannot be zero')
+        elif value > self._maxCatchChance:
+            value = self._maxCatchChance
+        self._catchChance = value
 
 
 class Warlord(PlayerBase):
-    def __init__(self, level, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, uid, level):
+        super().__init__(uid)
         self.level = level
         self.human = False
 
 
 class Gladiator(PlayerBase):
-    def __init__(self, level, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, uid, level):
+        super().__init__(uid)
         self.level = level
         self.human = False

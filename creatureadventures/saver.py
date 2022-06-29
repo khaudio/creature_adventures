@@ -33,11 +33,11 @@ def load_creature_deck_from_json(filename):
         deck = Deck()
         for cuid, stats in serialized['creatures'].items():
             creature = Creature()
-            creature.uid = cuid
-            creature.tier = stats['tier']
-            creature.baseAttack = stats['attack']
-            creature.baseDefense = stats['defense']
-            creature.baseMaxHP = stats['hp']
+            creature.uid = int(cuid)
+            creature.tier = int(stats['tier'])
+            creature.baseAttack = int(stats['attack'])
+            creature.baseDefense = int(stats['defense'])
+            creature.baseMaxHP = int(stats['hp'])
             for found, indexed in zip(stats['actions'], CoreBase._allActions):
                 if found == indexed.name:
                     creature.availableActions.append(indexed)

@@ -1,17 +1,28 @@
 from tieredobjectbase import *
 import dataclasses
 
+@dataclasses.dataclass
+class ModifierBase:
+    def __init__(self, numTurns, timed, activeDuringCombat):
+        if (numTurns > 0) and (timed is None):
+            timed = True
+        self.uid = None
+        self.numTurns = numTurns
+        self.timed = timed
+        self.activeDuringCombat = activeDuringCombat
+
 
 @dataclasses.dataclass
-class TimedModifier:
+class CreatureModifier(ModifierBase):
     '''
-    Modifiers to creatures that expire after numTurns.
+    Modifiers to creature attributes.
+    Can optionally expire after
+    numTurns if timed is set to True.
     value can be a positive or negative integer.
     '''
     
-    def __init__(self):
-        self.uid = None
-        self.numTurns = 0
+    def __init__(self, numTurns = 0, timed = None, activeDuringCombat = None):
+        super().__init__(numTurns, timed, activeDuringCombat)
         self.attackModifier = 0
         self.defenseModifier = 0
         self.hpModifier = 0
@@ -53,8 +64,9 @@ class Creature(CreatureBase):
         self.attackModifier = 0
         self.defenseModifier = 0
         self.hpModifier = 0
+        self.baseName, self.nickname = None, None
         
-        # Modifiers that expire after a specified number of turns
+        # Modifiers to attributes
         self.modifiers = []
         
         # Special actions per creature
@@ -65,10 +77,11 @@ class Creature(CreatureBase):
     def __str__(self):
         return '\n'.join((
                 f'Creature UID {self.uid}:',
-                f'Tier:\t\t\t{self.tierNames[self.tier]}',
+                f'Name:\t\t{self.name}',
+                f'Tier:\t\t{self.tierNames[self.tier]}',
                 f'Attack:\t\t{self.attack}',
                 f'Defense:\t{self.defense}',
-                f'HP:\t\t\t\t{self.hp} / {self.maxHP}'
+                f'HP:\t\t{self.hp} / {self.maxHP}'
             ))
 
 
@@ -132,7 +145,6 @@ class Creature(CreatureBase):
             raise ValueError('Must be positive nonzero integer')
         self.hpModifier = value - self.baseMaxHP
 
-
     @property
     def hp(self):
         return self._currentHP
@@ -148,14 +160,25 @@ class Creature(CreatureBase):
         else:
             self._currentHP = currentHPValue
 
+    @property
+    def name(self):
+        return self.nickname if self.nickname else self.baseName
+    
+    @name.setter
+    def name(self, value):
+        if not isinstance(value, str):
+            raise TypeError('Must be str')
+        self.nickname = value
+
     def add_modifier(self, modifier):
-        if isinstance(modifier, TimedModifier):
+        if isinstance(modifier, CreatureModifier):
             self.modifiers.append(modifier)
     
     def remove_modifier(self, modifier):
         for m in self.modifiers:
             if m == modifier:
                 self.modifiers.remove(m)
+                return
 
     def heal(self, additionalHP = None):
         if additionalHP is None:

@@ -62,3 +62,6 @@ def write_creature_pdf_from_deck(deck, filename, images):
 
     pdf.output(filename)
 
+
+def write_item_pdf_from_deck(deck, filename, images):
+    pass

@@ -49,10 +49,10 @@ class Battle:
                 index = i
         self._participants[index] = target
 
-    def switch_creatures(self, action):
+    def switch_creature_action(self, action):
         if not isinstance(action, Switch):
             raise TypeError('Must be Switch')
-        self.switch_creatuers(action.invoker, action.target)
+        self.switch_creatures(action.invoker, action.target)
 
     def process_single_action(self, action = None):
         '''Process a single action
@@ -65,7 +65,7 @@ class Battle:
         action = self.actionQueue.get() if action is None else action
         invoker =  self.match_participant(action.invoker)
         if isinstance(action, Switch):
-            self.switch_creatures(action)
+            self.switch_creature_action(action)
             self._update_queue_creatures(action.invoker, action.target)
             return
         action.run()
