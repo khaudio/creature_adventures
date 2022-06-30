@@ -1,0 +1,354 @@
+{
+    "creatures": {
+        "1": {
+            "tier": 0,
+            "attack": 4,
+            "defense": 0,
+            "hp": 11,
+            "actions": []
+        },
+        "2": {
+            "tier": 0,
+            "attack": 5,
+            "defense": 4,
+            "hp": 7,
+            "actions": []
+        },
+        "3": {
+            "tier": 0,
+            "attack": 3,
+            "defense": 2,
+            "hp": 11,
+            "actions": []
+        },
+        "4": {
+            "tier": 0,
+            "attack": 6,
+            "defense": 3,
+            "hp": 8,
+            "actions": []
+        },
+        "5": {
+            "tier": 0,
+            "attack": 4,
+            "defense": 2,
+            "hp": 10,
+            "actions": []
+        },
+        "6": {
+            "tier": 0,
+            "attack": 3,
+            "defense": 1,
+            "hp": 11,
+            "actions": []
+        },
+        "7": {
+            "tier": 0,
+            "attack": 7,
+            "defense": 2,
+            "hp": 7,
+            "actions": []
+        },
+        "8": {
+            "tier": 0,
+            "attack": 3,
+            "defense": 1,
+            "hp": 12,
+            "actions": []
+        },
+        "9": {
+            "tier": 0,
+            "attack": 6,
+            "defense": 2,
+            "hp": 8,
+            "actions": []
+        },
+        "10": {
+            "tier": 0,
+            "attack": 3,
+            "defense": 2,
+            "hp": 11,
+            "actions": []
+        },
+        "11": {
+            "tier": 0,
+            "attack": 4,
+            "defense": 2,
+            "hp": 9,
+            "actions": []
+        },
+        "12": {
+            "tier": 0,
+            "attack": 6,
+            "defense": 2,
+            "hp": 7,
+            "actions": []
+        },
+        "13": {
+            "tier": 0,
+            "attack": 6,
+            "defense": 2,
+            "hp": 7,
+            "actions": []
+        },
+        "14": {
+            "tier": 0,
+            "attack": 4,
+            "defense": 2,
+            "hp": 10,
+            "actions": []
+        },
+        "15": {
+            "tier": 0,
+            "attack": 3,
+            "defense": 1,
+            "hp": 12,
+            "actions": []
+        },
+        "16": {
+            "tier": 0,
+            "attack": 5,
+            "defense": 2,
+            "hp": 9,
+            "actions": []
+        },
+        "17": {
+            "tier": 0,
+            "attack": 3,
+            "defense": 1,
+            "hp": 12,
+            "actions": []
+        },
+        "18": {
+            "tier": 0,
+            "attack": 2,
+            "defense": 1,
+            "hp": 12,
+            "actions": []
+        },
+        "19": {
+            "tier": 0,
+            "attack": 7,
+            "defense": 3,
+            "hp": 7,
+            "actions": []
+        },
+        "20": {
+            "tier": 0,
+            "attack": 7,
+            "defense": 1,
+            "hp": 8,
+            "actions": []
+        },
+        "21": {
+            "tier": 0,
+            "attack": 3,
+            "defense": 1,
+            "hp": 12,
+            "actions": []
+        },
+        "22": {
+            "tier": 0,
+            "attack": 4,
+            "defense": 1,
+            "hp": 10,
+            "actions": []
+        },
+        "23": {
+            "tier": 0,
+            "attack": 4,
+            "defense": 3,
+            "hp": 8,
+            "actions": []
+        },
+        "24": {
+            "tier": 0,
+            "attack": 3,
+            "defense": 1,
+            "hp": 12,
+            "actions": []
+        },
+        "25": {
+            "tier": 0,
+            "attack": 6,
+            "defense": 3,
+            "hp": 7,
+            "actions": []
+        },
+        "26": {
+            "tier": 0,
+            "attack": 4,
+            "defense": 1,
+            "hp": 10,
+            "actions": []
+        },
+        "27": {
+            "tier": 0,
+            "attack": 5,
+            "defense": 3,
+            "hp": 8,
+            "actions": []
+        },
+        "28": {
+            "tier": 0,
+            "attack": 6,
+            "defense": 3,
+            "hp": 7,
+            "actions": []
+        },
+        "29": {
+            "tier": 1,
+            "attack": 8,
+            "defense": 1,
+            "hp": 8,
+            "actions": []
+        },
+        "30": {
+            "tier": 1,
+            "attack": 2,
+            "defense": 1,
+            "hp": 14,
+            "actions": []
+        },
+        "31": {
+            "tier": 1,
+            "attack": 5,
+            "defense": 2,
+            "hp": 11,
+            "actions": []
+        },
+        "32": {
+            "tier": 1,
+            "attack": 5,
+            "defense": 2,
+            "hp": 11,
+            "actions": []
+        },
+        "33": {
+            "tier": 1,
+            "attack": 3,
+            "defense": 1,
+            "hp": 14,
+            "actions": []
+        },
+        "34": {
+            "tier": 1,
+            "attack": 3,
+            "defense": 1,
+            "hp": 13,
+            "actions": []
+        },
+        "35": {
+            "tier": 1,
+            "attack": 5,
+            "defense": 0,
+            "hp": 12,
+            "actions": []
+        },
+        "36": {
+            "tier": 1,
+            "attack": 7,
+            "defense": 2,
+            "hp": 9,
+            "actions": []
+        },
+        "37": {
+            "tier": 1,
+            "attack": 7,
+            "defense": 3,
+            "hp": 8,
+            "actions": []
+        },
+        "38": {
+            "tier": 1,
+            "attack": 5,
+            "defense": 1,
+            "hp": 11,
+            "actions": []
+        },
+        "39": {
+            "tier": 1,
+            "attack": 6,
+            "defense": 2,
+            "hp": 11,
+            "actions": []
+        },
+        "40": {
+            "tier": 1,
+            "attack": 4,
+            "defense": 1,
+            "hp": 12,
+            "actions": []
+        },
+        "41": {
+            "tier": 1,
+            "attack": 4,
+            "defense": 3,
+            "hp": 10,
+            "actions": []
+        },
+        "42": {
+            "tier": 2,
+            "attack": 5,
+            "defense": 1,
+            "hp": 14,
+            "actions": []
+        },
+        "43": {
+            "tier": 2,
+            "attack": 3,
+            "defense": 2,
+            "hp": 15,
+            "actions": []
+        },
+        "44": {
+            "tier": 2,
+            "attack": 4,
+            "defense": 1,
+            "hp": 15,
+            "actions": []
+        },
+        "45": {
+            "tier": 2,
+            "attack": 3,
+            "defense": 3,
+            "hp": 15,
+            "actions": []
+        },
+        "46": {
+            "tier": 2,
+            "attack": 5,
+            "defense": 2,
+            "hp": 13,
+            "actions": []
+        },
+        "47": {
+            "tier": 2,
+            "attack": 5,
+            "defense": 2,
+            "hp": 12,
+            "actions": []
+        },
+        "48": {
+            "tier": 3,
+            "attack": 3,
+            "defense": 2,
+            "hp": 19,
+            "actions": []
+        },
+        "49": {
+            "tier": 3,
+            "attack": 7,
+            "defense": 4,
+            "hp": 11,
+            "actions": []
+        },
+        "50": {
+            "tier": 3,
+            "attack": 7,
+            "defense": 3,
+            "hp": 12,
+            "actions": []
+        }
+    }
+}

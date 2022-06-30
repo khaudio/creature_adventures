@@ -41,6 +41,9 @@ class Item(TieredObjectBase):
     def get(self):
         return self.value
 
+    def value_description(self):
+        return []
+
 
 class Potion(Item):
 
@@ -49,6 +52,9 @@ class Potion(Item):
 
     def __init__(self, tier, maxPossibleValue, persistent = False, uid = None):
         super().__init__(tier, maxPossibleValue, persistent, uid)
+        
+    def value_description_list(self):
+        return [f'Heal a creature for {self.value} HP']
 
 
 class Poison(Item):
@@ -59,6 +65,12 @@ class Poison(Item):
     def __init__(self, tier, maxPossibleValue, persistent = False, uid = None):
         super().__init__(tier, maxPossibleValue, persistent, uid)
 
+    def value_description_list(self):
+        return [
+                f'Damage a creature for {self.value} HP',
+                'Ignores defense'
+            ]
+
 
 class Elixir(Item):
 
@@ -67,6 +79,12 @@ class Elixir(Item):
     
     def __init__(self, tier, maxPossibleValue, persistent = False, uid = None):
         super().__init__(tier, maxPossibleValue, persistent, uid)
+
+    def value_description_list(self):
+        return [
+                f'Raise attack power of a creature by {self.value}',
+                f'Lasts until end of battle'
+            ]
 
 
 class Revive(Item):
@@ -77,6 +95,11 @@ class Revive(Item):
     def __init__(self, tier, maxPossibleValue, persistent = False, uid = None):
         super().__init__(tier, maxPossibleValue, persistent, uid)
 
+    def value_description_list(self):
+        return [
+                f'Revive a creature with 0 HP'
+            ]
+
 
 class Net(Item):
     
@@ -85,5 +108,4 @@ class Net(Item):
 
     def __init__(self, tier, maxPossibleValue, persistent = False, uid = None):
         super().__init__(tier, maxPossibleValue, persistent, uid)
-
 

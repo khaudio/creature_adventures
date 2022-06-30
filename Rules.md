@@ -1,8 +1,7 @@
 # Creature Adventures
 
-Battle using `Creatures`, collect `Sigils`, gain `Attributes` and `Artifacts`, then claim victory in `The Colosseum`, and dethrone the Emperor to win.
+Battle using `Creatures`, collect `Items` to build `Artifacts`, win `Sigils` in battle, then claim victory in `The Colosseum`, and dethrone the Emperor.
 Traverse the game board and roll to determine the outcome of each encounter.
-
 
 # Gameplay
 
@@ -10,7 +9,7 @@ Players take turns moving around the board and engaging in battles.  Roll to see
 
 Roll to move the specified number of spaces on the board.  When crossing through or landing on `Wilderness` tiles, add one `Footstep Counter` per wilderness tile crossed that turn, minus any counters reduced if the player has `Quiet Shoes`.  When the player completes movement, roll for a wild creature encounter (see `The Wilderness`).
 
-If a player's movement ends on a special tile, begin an encounter with that game element.  If movement ends on the same tile as another player, initiate combat with that player, unless on a special tile (`Home`, `Shaman`, `Warlord`, or `Thieves`).
+If a player's movement ends on a special tile, begin an encounter with that game element.  If movement ends on the same tile as another player, initiate combat with that player.
 
 ## Winning
 
@@ -34,53 +33,26 @@ Creatures do battle by attacking and defending.  When a creature's `HP` falls to
 
 There are multiple tiers of creatures, and some have unique abilites.
 
-## **Attribute Points**
+Creatures have three attributes: `HP`, `Attack`, and `Defense`.
 
-Creatures have three attributes: `HP`, `Attack`, and `Defense`.  Once assigned, attributes cannot be reassigned, with the exception of the three temporary points provided by the `Sigil of Power`.
+## **HP**
 
+Hit points available for each creature.  Each creature has a maximum `HP` value.  When a creature's `HP` reaches zero, it is unavailable during battle and must be revived.
 
-### **HP**
+## **Attack**
 
-Hit points available for each creature.  Each creature has a maximum `HP` value.  When a creature's `HP` reaches zero, it is unavailable during battle and must be revived.  All creatures begin the game with 10 `HP`.  Assigning an `Attribute Point` raises the maximum `HP` by 2.
+The physical damage a creature does to another creature's HP in battle.  Physical damage is negated by the defending creature's `Defense` value.  All other damage types ignore defense and do damage to HP directly.
 
-### **Attack**
+## **Defense**
 
-The base damage a creature does to another creature's HP in battle.
-
-### **Defense**
-
-The base defense value used to mitigate damage done by the aggressor's `Attack` value; i.e., if a creature strikes for 4 damage, and the defender's `Defense` is 3, it will sustain 1 damage to its `HP` when the attack is deflected.
+The base defense value used to mitigate physical damage done by the aggressor's `Attack` value; i.e., if a creature strikes for 4 damage, and the defender's `Defense` is 3, it will sustain 1 damage to its `HP` when attacked.  Defense value does not protect against poison or other non-physical damage.
 
 ## **Wild Creatures**
 
-Wild creatures are encountered when crossing `Wilderness` tiles on the game board.  They can be defeated or caught.  Catching a wild creature awards 2 EXP points, while defeating it yields a single EXP point.
+Wild creatures are encountered when crossing `Wilderness` tiles on the game board.  They can be defeated or caught.
 
-When a creature is caught, a player can choose to either discard the new creature, or keep it to replace one of the three in their hand.  `Attribute Points` from the discarded creature are lost and do not transfer (except for those granted by the `Sigil of Power`).
+When a creature is caught, a player can choose to either discard the new creature, or keep it to replace one of the three in their hand.
 
-
-# Levels and EXP
-
-All players begin the game at level 1.  Whenever a creature is defeated in battle, players gain 1 EXP.  When enough EXP is gained, players gain a level.  Maximum level is 5.  Each time a level is gained, players are awarded `Attribute Points` that can be assigned to any creature or traded for `Artifacts`.  EXP is awarded following all victorious battles, including ones with wild creatures.  The maximum `Attribute Points` that a player can earn is 15.
-
-- Level 1
-
-    1 `Attribute Point` given to players to begin game
-
-- Level 2 (Requires 3 EXP at Level 1)
-
-    2 `Attribute Points` earned
-
-- Level 3 (Requires 4 EXP at Level 2)
-
-    3 `Attribute Points` earned
-
-- Level 4 (Requires 6 EXP at Level 3)
-
-    4 `Attribute Points` earned
-
-- Level 5 (Requires 8 EXP at Level 4)
-
-    5 `Attribute Points` earned
 
 # Combat
 
@@ -95,27 +67,27 @@ Only one creature can be used at a time.  Each player chooses which creature to 
 Combat actions include:
 
 - **Attack**
-    - `Strike` (Roll for chances of inflicting damage)
-        - 10% chance for a miss (No damage done)
-        - 20% chance for an unmitigated hit (Attacking creature's base `Attack` power)
-        - 50% chance for a deflected hit (Attacker's `Attack` power minus defender's `Defense`)
-        - 10% chance to receive a counterstrike (Both creatures land deflected strikes)
-        - 10% chance for a critical hit (Double `Attack` power minus defender's `Defense`)
-    - `Meditate` (Roll to increase `Attack` for current and next turn)
-        - 10% chance for no change to `Attack`
-        - 50% chance to raise `Attack` by 30%
-        - 30% chance to raise `Attack` by 50%
-        - 10% chance to raise `Attack` by 100%
+    - `Strike` (Roll 1d6 for chances of inflicting physical damage)
+        - 1     Attack misses
+        - 2     Counterstrike: Both creatures strike each other for physical damage
+        - 3-5   Attack lands
+        - 6     Critical hit for double damage
+    - `Meditate` (Roll to increase `Attack` until the end of next volley)
+        - 1     No change to attack
+        - 2-5   Raise `Attack` by 2 points
+        - 6     `Attack` doubles
 
 - **Defend**
-    - `Brace` (Roll to boost `Defense` for current and next turn)
-        - 10% chance for no change to `Defense`
-        - 50% chance to raise `Defense` by 50%
-        - 30% chance to raise `Defense` by 100%
-        - 10% chance to raise `Defense` by 200%
+    - `Brace` (Roll to boost `Defense` until the end of next volley)
+        - 1     No change to `Defense`
+        - 2-5   Raise `Defense` by 2 points
+        - 6     `Defense` doubles
+    
     - `Dodge` (Roll to dodge current opponent attack entirely)
-        - 60% chance dodge is unsuccessful
-        - 40% chance attack is dodged (No damage done)
+        - 1-4   Dodge is unsuccessful
+        - 5     Dodge is successful
+        - 6     Parry: Dodge attack and counterstrike opponent for physical damage
+
     - `Inner Peace` (Heal a pre-assigned creature for 50% HP if the player has the `Sigil of Wisdom`).  `Inner Peace` may not be used to revive a creature while in battle.
 
 - **Switch**
@@ -157,20 +129,9 @@ Single player combat differs somewhat from PvP.  Offensive moves are still avail
 
 # Shaman
 
-`Shaman` revive and heal creatures by variable amounts.  Players can choose how much to risk when rolling for healing.
+`Shaman` revive and heal creatures by variable amounts.
 
-Choose:
-
-- 50% healing to one creature without rolling
-- Roll for a chance to heal one creature
-    - 50% chance for 25% healing
-    - 30% chance for 75% healing
-    - 20% chance for 100% healing
-- Roll for a chance to heal all creatures
-    - 50% chance for 0% healing
-    - 30% chance for 10% healing
-    - 20% chance for 100% healing
-
+Choose a creature to heal and roll 1d6 for the amount of HP healed.
 
 # Sigils
 
@@ -180,13 +141,11 @@ For example, if Player A attacks Player B unsuccessfully, Player A returns `Home
 
 ## **Sigil of Power**
 
-The `Sigil of Power` gives three temporary `Attribute Points` to the player who holds it that can be redistributed at will once per turn, if desired; however, if the creature's HP is empty, points gained by `Sigils` may not be added or removed until the creature is revived.
-
-For example, a player may add three `Attack` points to a single creature, and on the next turn, move two of those three points to another creature's `Defense`.
+The `Sigil of Power` gives three temporary `Attack` points to the player who holds it that can be redistributed at will once per turn, if desired.
 
 ## **Sigil of Speed**
 
-The `Sigil of Speed` allows a player to attack first.  If defending, the player may strike first.  If attacking, the player with the sigil may execute two attacks in a row before the defending player may respond.
+The `Sigil of Speed` allows a player to attack first in battle.  Essentially, the player with this `Sigil` receives one free hit to open the battle.  Afterward, battle continues normally (simultaneous actions).
 
 ## **Sigil of Wisdom**
 
@@ -207,11 +166,7 @@ For example, if a player moves across 3 wilderness tiles in a turn, they must ro
 
 ## **Thieves**
 
-Thieves are combatants found among The Wilderness that provide extra EXP if defeated, at the risk of losing `Attribute Points`.  Players may choose to gamble up to three `Attribute Points` and roll to decide the number of battles required.  Thieves scale with player level.
-
-- 50% chance to battle one creature
-- 30% chance to battle two creatures
-- 20% chance to battle three creatures
+Thieves are combatants found among The Wilderness that award extra 
 
 ## **Warlords**
 
@@ -223,35 +178,19 @@ Thieves are combatants found among The Wilderness that provide extra EXP if defe
 
 # Artifacts
 
-`Artifacts` are game modifiers that are less powerful than `Sigils` and are not required for victory.  Artifacts can be purchased using `Attribute Points`.  All players can purchase all items; i.e., unlike `Sigils`, the number of available `Artifacts` is not finite.
+`Artifacts` are game modifiers that are less powerful than `Sigils` and are not required for victory.  Artifacts can be purchased using materials.  All players can purchase all items; i.e., unlike `Sigils`, there is no limit to the number of `Artifacts` a player may have.
 
 ## **Fortify**
 
 `Fortify` allows a player to begin defensive combat with `Brace`, even if the opponent has the `Sigil of Speed`.
 
-- Level 1 (Cost: 1 `Attribute Points`)
-
-    Roll to `Brace` before the first attack
-
-- Level 2 (Cost: 2 `Attribute Points`)
-
-    Roll to `Brace` or `Dodge` before the first attack
-
-- Level 3 (Cost: 3 `Attribute Points`)
-
-    Begin every defensive encounter by temporarily healing one creature for 30% HP.  When the encounter is over, the creature loses the temporary HP.
-
 ## **Tailwind**
 
-`Tailwind` allows the player to roll twice for movement.  Only one roll may be used to move across the board; i.e., if a player rolls a 4 and then 8, they may choose to move 8 spaces, discarding the roll of 4.
-
-- Level 1 (Cost: 2 `Attribute Points`)
+`Tailwind` allows the player to roll twice for movement.  Only one roll may be used to move across the board; i.e., if a player rolls a 2 and then 6, they may choose to move 6 spaces, discarding the roll of 2.
 
 ## **Ascension**
 
 `Ascension` swaps any two players' positions on the game board.  It can only be used once per charge; i.e., once a player uses `Ascension`, they must purchase another one using more `Attribute Points`.  Furthermore, the player receives `Astral Sickness` after casting, and cannot use `Ascension` on the next turn.
-
-- Level 1 (Cost: 3 `Attribute Points` per charge)
 
 ## **Quiet Shoes**
 

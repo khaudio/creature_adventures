@@ -144,7 +144,7 @@ def get_deck(core, override=False):
 def main():
     print('Starting Adventure...\n')
     
-    core = CoreBase(shuffle=True)
+    core = CoreBase(shuffle=False)
     core.creatureDeck = get_deck(core, override=False)
 
     demo_test(core)
