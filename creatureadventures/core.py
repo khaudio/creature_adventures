@@ -33,7 +33,7 @@ class CoreBase:
                 self.maxPossibleStatPoints
             )
         self.itemDeck = create_item_deck(
-                100, # Size of item deck
+                50, # Size of item deck
                 self.maxPossibleStatPoints
             )
         

@@ -142,11 +142,14 @@ def create_item_deck(totalNumCards, maxPossibleStatPoints):
 
     deck += create_single_item_deck(Poison, remainingSlice, -round(maxPossibleStatPoints / 3))
     deck += create_single_item_deck(Revive, remainingSlice, maxPossibleStatPoints)
-    deck += create_single_item_deck(Net, remainingSlice, round(maxPossibleStatPoints) / 5)
+    deck += create_single_item_deck(Bait, remainingSlice, round(maxPossibleStatPoints) / 5)
 
     # Correct rounding errors by removing Potions
-    while len(deck) > totalNumCards:
-        deck.remove[0]
+    if len(deck) > totalNumCards:
+        flipped = list(reversed(deck))
+        while len(flipped) > totalNumCards:
+            flipped.pop()
+        deck = Deck(reversed(flipped))
 
     # Deduplicate UIDs
     deck.reset_uids()

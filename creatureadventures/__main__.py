@@ -120,7 +120,7 @@ def load_saved_creatures(path='.'):
             return
 
 
-def get_deck(core, override=False):
+def get_creature_deck(core, override=False):
     # Attempt to load a saved creature deck
     deck = None
     if not override:
@@ -145,9 +145,15 @@ def main():
     print('Starting Adventure...\n')
     
     core = CoreBase(shuffle=False)
-    core.creatureDeck = get_deck(core, override=False)
+    # core.creatureDeck = get_creature_deck(core, override=False)
 
-    demo_test(core)
+    write_item_pdf_from_deck(
+            core.itemDeck,
+            filename='./build/item_cards.pdf',
+            images='./images'
+        )
+
+    # demo_test(core)
 
 
 main()

@@ -101,11 +101,18 @@ class Revive(Item):
             ]
 
 
-class Net(Item):
+class Bait(Item):
     
-    name = 'Net'
+    name = 'Bait'
     description = 'Raises chances of successfully catching wild creatures'
 
     def __init__(self, tier, maxPossibleValue, persistent = False, uid = None):
         super().__init__(tier, maxPossibleValue, persistent, uid)
+
+    def value_description_list(self):
+        return [
+                f'Raise chances of catching wild creature by {self.value}',
+                f'Lasts until end of battle'
+            ]
+
 
