@@ -72,7 +72,6 @@ class Creature(CreatureBase):
                 f'HP:\t\t{self.hp} / {self.maxHP}'
             ))
 
-
     @property
     def attack(self):
         return (

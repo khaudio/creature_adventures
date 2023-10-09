@@ -41,7 +41,7 @@ class Item(TieredObjectBase):
     def get(self):
         return self.value
 
-    def value_description(self):
+    def value_description_list(self):
         return []
 
 
